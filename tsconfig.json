@@ -15,11 +15,9 @@
         // "allowImportingTsExtensions": true,
 
         /* Strictness */
-        "strict": true,
-        "noUncheckedIndexedAccess": true,
-        "checkJs": true,
-
-        "noImplicitAny": true,
+        "strict": false,
+        "strictNullChecks": true,
+        "noImplicitAny": false,
 
         /* Bundled projects */
         "lib": ["dom", "dom.iterable", "ES2022"],

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Configuration, PlaidApi, PlaidEnvironments, CountryCode } from "plaid";
+import { Configuration, PlaidApi, PlaidEnvironments, CountryCode, Institution } from "plaid";
 
 const plaidConfig = new Configuration({
     basePath: PlaidEnvironments[process.env.PLAID_ENV as keyof typeof PlaidEnvironments],
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         // Get item details
         const itemResponse = await client.itemGet({ access_token });
 
-        let institutionData = null;
+        let institutionData: Institution | null = null;
 
         // Get institution details if institution_id exists
         if (itemResponse.data.item.institution_id) {
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         };
 
         return NextResponse.json(data);
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("Error fetching Plaid data:", error);
         return NextResponse.json({ error: "Error fetching account data" }, { status: 500 });
     }
