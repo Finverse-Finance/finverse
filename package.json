@@ -13,7 +13,8 @@
         "lint:fix": "next lint --fix",
         "preview": "next build && next start",
         "start": "next start",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "postinstall": "npm install --legacy-peer-deps"
     },
     "dependencies": {
         "@clerk/nextjs": "^6.14.1",
