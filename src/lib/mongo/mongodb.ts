@@ -48,4 +48,3 @@ if (process.env.NODE_ENV === "development") {
  * @returns MongoDB client instance
  */
 export default client;
-// Added database connection notes
