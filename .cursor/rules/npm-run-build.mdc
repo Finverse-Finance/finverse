@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+After all your changes run `npm run build` to ensure the changes built properly. If not, fix those errors and build again.
