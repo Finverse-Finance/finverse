@@ -38,7 +38,7 @@ jobs:
             - name: Install Dependencies
               run: |
                   echo "Installing Dependencies..."
-                  npm ci
+                  npm ci --force
 
             - name: Pull Vercel Environment Information
               run: |
