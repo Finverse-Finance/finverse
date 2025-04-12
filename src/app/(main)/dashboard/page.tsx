@@ -3,11 +3,19 @@
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { OverviewCards } from "@/components/ui/overviewCard";
+import { IncomeExpenseChart } from "@/components/ui/incomeExpenseChart";
+import { CategoryPieChart } from "@/components/ui/categoryPieChart";
+import { MonthlyBarCharts } from "@/components/ui/monthlyBarChart";
+import { RecentTransactions } from "@/components/ui/recentTransactions";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 
 export default function Dashboard() {
     const { user, isLoaded } = useUser();
     const [isPolling, setIsPolling] = useState(false);
+    const [availableBalance, setAvailableBalance] = useState<number | null>(null);
     const router = useRouter();
+      
 
     // Check if user has NOT completed onboarding, redirect to onboarding if needed
     useEffect(() => {
@@ -24,6 +32,30 @@ export default function Dashboard() {
             checkOnboardingStatus();
         }
     }, [isLoaded, user, router]);
+
+    useEffect(() => {
+        const fetchMongoBalance = async () => {
+          const clerkId = user?.id;
+          if (!clerkId) return;
+      
+          try {
+            const res = await fetch(`/api/plaid/get-user-financials?clerkId=${clerkId}`);
+            const data = await res.json();
+      
+            if (data?.balance) {
+              setAvailableBalance(data.balance);
+            }
+      
+            // Optional: load transactions here too if needed
+          } catch (err) {
+            console.error("Error fetching from MongoDB:", err);
+          }
+        };
+      
+        if (isLoaded && user) {
+          fetchMongoBalance();
+        }
+      }, [isLoaded, user]);
 
     // Poll user data to check for updates if metadata might be pending
     useEffect(() => {
@@ -95,6 +127,46 @@ export default function Dashboard() {
                     Onboarding completed successfully! Welcome to Finverse.
                 </div>
             )}
+
+
+      {/* Bento Grid Style Cards */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        {/* Left Card - Total + Summary */}
+        <div className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Total Balance</h2>
+            <p className="text-3xl mt-2 font-semibold text-gray-800">
+              {availableBalance !== null ? `$${availableBalance.toLocaleString()}` : "Loading..."}
+            </p>
+          </div>
+          <div className="mt-6 space-y-3">
+            <div className="flex items-center gap-2 text-green-600">
+              <ArrowUpIcon className="h-5 w-5" />
+              <span>This Month’s Income: $1,800.00</span>
+            </div>
+            <div className="flex items-center gap-2 text-red-600">
+              <ArrowDownIcon className="h-5 w-5" />
+              <span>This Month’s Expenses: $1,265.50</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Card - Spending vs Average */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Spending vs Monthly Average</h2>
+          <p className="text-4xl font-semibold text-yellow-500">112%</p>
+          <p className="text-sm text-gray-500 mt-2">You’ve spent 12% more than your average monthly spending so far.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 my-6">
+        <IncomeExpenseChart />
+        <CategoryPieChart />
+      </div>
+
+      <MonthlyBarCharts />
+
+      <RecentTransactions />
 
             <div className="grid gap-6 md:grid-cols-2">
                 <div className="bg-white p-6 rounded-lg shadow-md">
