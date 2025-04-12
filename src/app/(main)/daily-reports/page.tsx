@@ -21,13 +21,13 @@ interface SavedReport {
 
 const LoadingOverlay = ({ message }: { message: string }) => {
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-w-md w-full">
-                <div className="flex flex-col items-center space-y-4 text-center">
-                    <LoaderIcon className="h-8 w-8 animate-spin text-primary" />
-                    <h3 className="text-xl font-semibold">{message}</h3>
-                    <p className="text-muted-foreground">
-                        Our AI is analyzing your transactions and preparing your financial report.
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 loading-overlay">
+            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-xl loading-container">
+                <div className="flex flex-col items-center gap-3 min-w-[300px]">
+                    <LoaderIcon className="animate-spin h-10 w-10 loading-spinner" />
+                    <p className="text-center loading-message">{message}</p>
+                    <p className="text-sm text-muted-foreground mt-2 loading-submessage">
+                        This may take a few seconds...
                     </p>
                 </div>
             </div>
@@ -128,7 +128,7 @@ export default function DailyReports() {
     };
 
     return (
-        <div className="container max-w-6xl mx-auto px-4 py-8">
+        <div className="container max-w-6xl mx-auto px-4 py-8 daily-reports-page">
             {isLoading && <LoadingOverlay message="Generating Your Financial Report" />}
 
             <div className="flex flex-col space-y-2 mb-8">

@@ -46,3 +46,142 @@
 .markdown-content p {
     margin-bottom: 1rem;
 }
+
+/* Dropdown orange tint for Daily Reports */
+.daily-reports-page .select-trigger,
+.daily-reports-page [data-radix-popper-content-wrapper] {
+    background-color: rgba(255, 165, 0, 0.05) !important; /* Light orange tint */
+    border-color: rgba(255, 165, 0, 0.2) !important; /* Subtle orange border */
+}
+
+.daily-reports-page .select-trigger:hover,
+.daily-reports-page [data-radix-popper-content-wrapper]:hover {
+    background-color: rgba(255, 165, 0, 0.1) !important; /* Slightly stronger tint on hover */
+    border-color: rgba(255, 165, 0, 0.3) !important;
+}
+
+.daily-reports-page [data-radix-select-item][data-highlighted],
+.daily-reports-page [cmdk-item][data-selected="true"] {
+    background-color: rgba(255, 165, 0, 0.15) !important; /* Orange tint for selected items */
+}
+
+/* Daily Reports dropdown styling with orange tint */
+.daily-reports-page .select-trigger {
+    background-color: rgba(255, 153, 51, 0.05);
+    border-color: rgba(255, 153, 51, 0.2);
+}
+
+.daily-reports-page .select-trigger:hover {
+    background-color: rgba(255, 153, 51, 0.1);
+    border-color: rgba(255, 153, 51, 0.3);
+}
+
+.daily-reports-page [data-radix-popper-content-wrapper] {
+    background-color: rgba(255, 153, 51, 0.03);
+    border-color: rgba(255, 153, 51, 0.2);
+}
+
+.daily-reports-page [data-highlighted],
+.daily-reports-page [data-state="checked"] {
+    background-color: rgba(255, 153, 51, 0.2);
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* Additional daily reports form styling */
+.daily-reports-page input,
+.daily-reports-page textarea {
+    background-color: rgba(255, 153, 51, 0.05);
+    border-color: rgba(255, 153, 51, 0.2);
+}
+
+.daily-reports-page input:focus,
+.daily-reports-page textarea:focus {
+    border-color: rgba(255, 153, 51, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 153, 51, 0.2);
+}
+
+.daily-reports-page button[type="submit"] {
+    background-color: rgba(255, 153, 51, 0.8);
+    color: white;
+}
+
+.daily-reports-page button[type="submit"]:hover {
+    background-color: rgba(255, 153, 51, 1);
+}
+
+/* LoadingOverlay component styles */
+.daily-reports-page .fixed.inset-0.bg-black\/50 {
+    backdrop-filter: blur(3px);
+    transition: all 0.3s ease;
+}
+
+.daily-reports-page .bg-white.dark\:bg-gray-900 {
+    border-left: 4px solid rgba(255, 153, 51, 0.8);
+}
+
+.daily-reports-page .animate-spin {
+    color: rgba(255, 153, 51, 1) !important;
+}
+
+/* LoadingOverlay Styles */
+.loading-overlay {
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.loading-container {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: translateY(0);
+    animation: container-fade 0.5s ease-out;
+}
+
+.loading-spinner {
+    color: #3b82f6 !important;
+    animation: spin 1.5s linear infinite;
+}
+
+.loading-message {
+    font-weight: 600;
+    font-size: 1.25rem;
+    animation: fade-in 0.6s ease-out;
+}
+
+.loading-submessage {
+    opacity: 0.8;
+    animation: fade-in 0.8s ease-out;
+}
+
+@keyframes container-fade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Submit Button Hover Effect */
+button[type="submit"]:hover {
+    background-color: #2563eb;
+    transition: background-color 0.3s ease;
+}
