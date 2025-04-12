@@ -59,12 +59,10 @@ export default function Dashboard() {
                     const avgExpense =
                         previousMonths.reduce((acc, curr) => acc + (curr.Expenses || 0), 0) /
                         Math.max(previousMonths.length, 1);
-                    const percent = latestMonth.Expenses && avgExpense
-                        ? (latestMonth.Expenses / avgExpense) * 100
-                        : null;
+                    const percent =
+                        latestMonth.Expenses && avgExpense ? (latestMonth.Expenses / avgExpense) * 100 : null;
                     setSpendingPercent(percent);
                 }
-
             } catch (err) {
                 console.error("Error fetching from MongoDB:", err);
             }
@@ -172,10 +170,10 @@ export default function Dashboard() {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-bold text-gray-900 mb-2">Spending vs Monthly Average</h2>
                     <p className="text-4xl font-semibold text-yellow-500">
-                    {spendingPercent !== null ? `${spendingPercent.toFixed(0)}%` : "Loading..."}
+                        {spendingPercent !== null ? `${spendingPercent.toFixed(0)}%` : "Loading..."}
                     </p>
                     <p className="text-sm text-gray-500 mt-2">
-                    {spendingPercent !== null
+                        {spendingPercent !== null
                             ? `You’ve spent ${(spendingPercent - 100).toFixed(0)}% more than your average monthly spending so far.`
                             : "Calculating spending comparison..."}
                     </p>
