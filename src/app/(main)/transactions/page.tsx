@@ -7,12 +7,14 @@ import { useAuth } from "@clerk/nextjs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import AddTransactionDialog from "./components/add-transaction-dialog";
 
 export default function Transactions() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { isLoaded, userId } = useAuth();
+    const [showAddDialog, setShowAddDialog] = useState(false);
 
     const fetchTransactions = useCallback(async () => {
         try {
@@ -43,7 +45,7 @@ export default function Transactions() {
         <div className="container mx-auto py-10">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Transactions</h1>
-                <Button className="bg-amber-500 hover:bg-amber-600 text-white">
+                <Button onClick={() => setShowAddDialog(true)} className="bg-amber-500 hover:bg-amber-600 text-white">
                     <Plus className="mr-2 h-4 w-4" /> Add Transaction
                 </Button>
             </div>
@@ -58,6 +60,12 @@ export default function Transactions() {
             ) : (
                 <DataTable data={transactions} refreshData={fetchTransactions} />
             )}
+
+            <AddTransactionDialog
+                open={showAddDialog}
+                onOpenChange={setShowAddDialog}
+                onTransactionAdded={fetchTransactions}
+            />
         </div>
     );
 }
