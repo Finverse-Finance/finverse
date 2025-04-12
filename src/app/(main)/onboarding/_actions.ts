@@ -41,7 +41,21 @@ interface PlaidData {
             postal_code?: string;
             region?: string;
         };
+        personal_finance_category?: {
+            primary: string;
+            detailed: string;
+        };
     }>;
+    financials?: {
+        incomeTransactions?: Array<any>;
+        expenseTransactions?: Array<any>;
+        totalIncome?: number;
+        totalExpenses?: number;
+        incomeByDate?: Record<string, number>;
+        expensesByDate?: Record<string, number>;
+        incomeByCategory?: Record<string, number>;
+        expensesByCategory?: Record<string, number>;
+    };
 }
 
 /**
@@ -220,6 +234,15 @@ export async function updateUserWithPlaidData(plaidData: PlaidData) {
                 console.log("SERVER ACTION: No transactions to save");
                 // Initialize with empty array if no transactions
                 updateData.transactions = [];
+            }
+
+            // Add financial analytics if available
+            if (plaidData.financials) {
+                console.log("SERVER ACTION: Adding financial analytics");
+                updateData.financials = {
+                    ...plaidData.financials,
+                    lastUpdated: new Date(),
+                };
             }
 
             // Update the user document with all data

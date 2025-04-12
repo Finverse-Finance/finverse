@@ -6,11 +6,6 @@ const isPublicRoute = createRouteMatcher(["/", "/favicon.ico", "/api(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
     const { userId } = await auth();
-
-    // For debugging
-    console.log("Middleware: URL path:", req.nextUrl.pathname);
-    console.log("Middleware: userId:", userId);
-
     // If the user isn't signed in and the route is private, protect it
     if (!userId && !isPublicRoute(req)) {
         console.log("Middleware: User not signed in, protecting route");
@@ -19,7 +14,7 @@ export default clerkMiddleware(async (auth, req) => {
 
     // If we've reached here, user is authenticated or accessing a public route
     // Simply allow access without checking onboarding status
-    console.log("Middleware: Allowing access to route");
+
     return NextResponse.next();
 });
 

@@ -207,6 +207,7 @@ export default function Onboarding() {
                 institution: data.institution,
                 item: data.item,
                 transactions: data.transactions,
+                financials: data.financials,
             });
 
             if (result.error) {
