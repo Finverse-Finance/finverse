@@ -14,6 +14,9 @@ export default function Dashboard() {
     const { user, isLoaded } = useUser();
     const [isPolling, setIsPolling] = useState(false);
     const [availableBalance, setAvailableBalance] = useState<number | null>(null);
+    const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
+    const [monthlyExpenses, setMonthlyExpenses] = useState<number>(0);
+    const [spendingPercent, setSpendingPercent] = useState<number | null>(null);
     const router = useRouter();
 
     // Check if user has NOT completed onboarding, redirect to onboarding if needed
@@ -44,7 +47,24 @@ export default function Dashboard() {
                     setAvailableBalance(data.balance);
                 }
 
-                // Optional: load transactions here too if needed
+                const summaryRes = await fetch(`/api/plaid/get-monthly-summary?clerkId=${clerkId}`);
+                const summaryData = await summaryRes.json();
+                if (Array.isArray(summaryData) && summaryData.length > 0) {
+                    const latestMonth = summaryData[summaryData.length - 1];
+                    setMonthlyIncome(latestMonth.Income ?? 0);
+                    setMonthlyExpenses(latestMonth.Expenses ?? 0);
+
+                    // Calculate spending % vs. previous average
+                    const previousMonths = summaryData.slice(0, -1);
+                    const avgExpense =
+                        previousMonths.reduce((acc, curr) => acc + (curr.Expenses || 0), 0) /
+                        Math.max(previousMonths.length, 1);
+                    const percent = latestMonth.Expenses && avgExpense
+                        ? (latestMonth.Expenses / avgExpense) * 100
+                        : null;
+                    setSpendingPercent(percent);
+                }
+
             } catch (err) {
                 console.error("Error fetching from MongoDB:", err);
             }
@@ -139,11 +159,11 @@ export default function Dashboard() {
                     <div className="mt-6 space-y-3">
                         <div className="flex items-center gap-2 text-green-600">
                             <ArrowUpIcon className="h-5 w-5" />
-                            <span>This Month’s Income: $1,800.00</span>
+                            <span>This Month’s Income: ${monthlyIncome.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2 text-red-600">
                             <ArrowDownIcon className="h-5 w-5" />
-                            <span>This Month’s Expenses: $1,265.50</span>
+                            <span>This Month’s Expenses: ${monthlyExpenses.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
@@ -151,9 +171,13 @@ export default function Dashboard() {
                 {/* Right Card - Spending vs Average */}
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-bold text-gray-900 mb-2">Spending vs Monthly Average</h2>
-                    <p className="text-4xl font-semibold text-yellow-500">112%</p>
+                    <p className="text-4xl font-semibold text-yellow-500">
+                    {spendingPercent !== null ? `${spendingPercent.toFixed(0)}%` : "Loading..."}
+                    </p>
                     <p className="text-sm text-gray-500 mt-2">
-                        You’ve spent 12% more than your average monthly spending so far.
+                    {spendingPercent !== null
+                            ? `You’ve spent ${(spendingPercent - 100).toFixed(0)}% more than your average monthly spending so far.`
+                            : "Calculating spending comparison..."}
                     </p>
                 </div>
             </div>
