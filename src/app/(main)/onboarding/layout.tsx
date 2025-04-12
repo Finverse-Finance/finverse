@@ -5,6 +5,5 @@ export default async function OnboardingLayout({ children }: { children: React.R
 
     // Client-side redirection will handle navigation based on onboarding status
     // This layout simply renders the children
-    console.log("Onboarding Layout - Rendering onboarding page");
     return <div className="flex min-h-screen flex-col items-center justify-center bg-background">{children}</div>;
 }

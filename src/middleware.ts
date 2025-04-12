@@ -8,7 +8,6 @@ export default clerkMiddleware(async (auth, req) => {
     const { userId } = await auth();
     // If the user isn't signed in and the route is private, protect it
     if (!userId && !isPublicRoute(req)) {
-        console.log("Middleware: User not signed in, protecting route");
         await auth.protect();
     }
 

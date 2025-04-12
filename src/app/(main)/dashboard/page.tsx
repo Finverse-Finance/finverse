@@ -23,7 +23,6 @@ export default function Dashboard() {
                 // Reload user to get latest metadata
                 await user.reload();
                 if (user.publicMetadata?.onboardingComplete !== true) {
-                    console.log("User has not completed onboarding, redirecting to onboarding page");
                     router.push("/onboarding");
                 }
             };

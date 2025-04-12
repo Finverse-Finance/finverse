@@ -65,22 +65,17 @@ interface PlaidData {
  * 3. Redirecting to the dashboard
  */
 export async function completeOnboarding(formData: FormData) {
-    console.log("SERVER ACTION: Starting onboarding process");
     try {
         const { userId } = await auth();
-        console.log("SERVER ACTION: User ID from auth:", userId);
 
         if (!userId) {
-            console.log("SERVER ACTION: No logged in user");
             return { success: false, error: "No logged in user" };
         }
 
         const clerk = await clerkClient();
         const onboardingType = formData.get("onboardingType") as string;
-        console.log("SERVER ACTION: Onboarding type:", onboardingType);
 
         // Update user's public metadata via Clerk
-        console.log("SERVER ACTION: Updating Clerk metadata");
         try {
             const updateResult = await clerk.users.updateUser(userId, {
                 publicMetadata: {
@@ -89,18 +84,12 @@ export async function completeOnboarding(formData: FormData) {
                     onboardingTimestamp: Date.now(),
                 },
             });
-            console.log(
-                "SERVER ACTION: Clerk metadata updated successfully:",
-                updateResult.publicMetadata?.onboardingComplete,
-                updateResult.publicMetadata?.onboardingType
-            );
         } catch (clerkError) {
             console.error("SERVER ACTION: Error updating Clerk metadata:", clerkError);
             throw clerkError;
         }
 
         // Also save to MongoDB
-        console.log("SERVER ACTION: Updating MongoDB");
         try {
             const db = client.db("finverse");
 
@@ -113,8 +102,6 @@ export async function completeOnboarding(formData: FormData) {
 
             // For manual users, initialize with an empty transactions array
             if (onboardingType === "manual") {
-                console.log("SERVER ACTION: Initializing empty transactions array for manual user");
-
                 // Initialize with empty transactions array
                 Object.assign(userData, { transactions: [] });
             } else {
@@ -125,19 +112,12 @@ export async function completeOnboarding(formData: FormData) {
             const updateResult = await db
                 .collection("users")
                 .updateOne({ clerkId: userId }, { $set: userData }, { upsert: true });
-
-            console.log(
-                "SERVER ACTION: MongoDB updated successfully:",
-                updateResult.acknowledged,
-                updateResult.modifiedCount || updateResult.upsertedCount
-            );
         } catch (mongoError) {
             console.error("SERVER ACTION: Error updating MongoDB:", mongoError);
             // Continue even if MongoDB fails - we can rely on Clerk metadata
         }
 
         // Force session synchronization to update claims
-        console.log("SERVER ACTION: Attempting to force session sync");
         try {
             // Get the active session ID
             const session = await auth();
@@ -146,7 +126,6 @@ export async function completeOnboarding(formData: FormData) {
             if (!sessionId) {
                 console.warn("SERVER ACTION: No active session ID found, skipping sync");
             } else {
-                console.log("SERVER ACTION: Syncing session with ID:", sessionId);
                 const syncResponse = await fetch(`https://api.clerk.com/v1/sessions/${sessionId}/touch`, {
                     method: "POST",
                     headers: {
@@ -159,7 +138,6 @@ export async function completeOnboarding(formData: FormData) {
                 });
 
                 const syncStatus = syncResponse.ok ? "succeeded" : "failed";
-                console.log(`SERVER ACTION: Session sync attempt ${syncStatus} with status ${syncResponse.status}`);
 
                 if (!syncResponse.ok) {
                     console.warn("SERVER ACTION: Session sync response:", await syncResponse.text());
@@ -171,11 +149,9 @@ export async function completeOnboarding(formData: FormData) {
         }
 
         // Revalidate relevant paths
-        console.log("SERVER ACTION: Revalidating paths");
         revalidatePath("/dashboard");
         revalidatePath("/onboarding");
 
-        console.log("SERVER ACTION: Onboarding completed successfully");
         return { success: true, message: "Onboarding completed successfully" };
     } catch (error) {
         console.error("SERVER ACTION: Error completing onboarding:", error);
@@ -190,18 +166,14 @@ export async function completeOnboarding(formData: FormData) {
  * Updates user with Plaid account data after successful connection
  */
 export async function updateUserWithPlaidData(plaidData: PlaidData) {
-    console.log("SERVER ACTION: Starting Plaid data update");
     try {
         const { userId } = await auth();
-        console.log("SERVER ACTION: User ID from auth:", userId);
 
         if (!userId) {
-            console.log("SERVER ACTION: No logged in user");
             return { success: false, error: "No logged in user" };
         }
 
         // Save Plaid data and transactions to MongoDB user document
-        console.log("SERVER ACTION: Saving Plaid data to MongoDB");
         try {
             const db = client.db("finverse");
 
@@ -217,8 +189,6 @@ export async function updateUserWithPlaidData(plaidData: PlaidData) {
 
             // Check for transactions
             if (plaidData.transactions && plaidData.transactions.length > 0) {
-                console.log(`SERVER ACTION: Processing ${plaidData.transactions.length} transactions`);
-
                 // Map transactions to include additional metadata
                 const formattedTransactions = plaidData.transactions.map((tx) => ({
                     ...tx,
@@ -228,17 +198,13 @@ export async function updateUserWithPlaidData(plaidData: PlaidData) {
 
                 // Add transactions to the update data
                 updateData.transactions = formattedTransactions;
-
-                console.log(`SERVER ACTION: Adding ${formattedTransactions.length} transactions to user document`);
             } else {
-                console.log("SERVER ACTION: No transactions to save");
                 // Initialize with empty array if no transactions
                 updateData.transactions = [];
             }
 
             // Add financial analytics if available
             if (plaidData.financials) {
-                console.log("SERVER ACTION: Adding financial analytics");
                 updateData.financials = {
                     ...plaidData.financials,
                     lastUpdated: new Date(),
@@ -249,21 +215,11 @@ export async function updateUserWithPlaidData(plaidData: PlaidData) {
             const updateResult = await db
                 .collection("users")
                 .updateOne({ clerkId: userId }, { $set: updateData }, { upsert: true });
-
-            console.log(
-                "SERVER ACTION: MongoDB updated successfully:",
-                updateResult.acknowledged,
-                "Modified:",
-                updateResult.modifiedCount,
-                "Upserted:",
-                updateResult.upsertedCount
-            );
         } catch (mongoError) {
             console.error("SERVER ACTION: Error saving Plaid data to user document:", mongoError);
             throw mongoError;
         }
 
-        console.log("SERVER ACTION: Plaid data update completed successfully");
         return { success: true };
     } catch (error) {
         console.error("SERVER ACTION: Error saving Plaid data:", error);

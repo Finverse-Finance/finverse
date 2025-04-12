@@ -52,8 +52,6 @@ export async function POST(req: NextRequest) {
         // Fetch all transactions using pagination
         let allTransactions: any[] = [];
 
-        console.log(`Fetching transactions from ${startDateStr} to ${endDateStr}`);
-
         // First, use transactionsGet to fetch initial transactions
         const initialRequest = {
             access_token,
@@ -68,10 +66,6 @@ export async function POST(req: NextRequest) {
         let transactionsResponse = await client.transactionsGet(initialRequest);
         allTransactions = [...transactionsResponse.data.transactions];
 
-        console.log(
-            `Fetched ${allTransactions.length} of ${transactionsResponse.data.total_transactions} transactions`
-        );
-
         // Continue fetching if there are more transactions
         while (transactionsResponse.data.transactions.length < transactionsResponse.data.total_transactions) {
             const paginatedRequest = {
@@ -84,10 +78,6 @@ export async function POST(req: NextRequest) {
 
             transactionsResponse = await client.transactionsGet(paginatedRequest);
             allTransactions = [...allTransactions, ...transactionsResponse.data.transactions];
-
-            console.log(
-                `Fetched ${allTransactions.length} of ${transactionsResponse.data.total_transactions} transactions`
-            );
 
             // Safety check to prevent infinite loops
             if (transactionsResponse.data.transactions.length === 0) {
@@ -105,11 +95,8 @@ export async function POST(req: NextRequest) {
 
         // Add pending transactions to our list
         if (pendingTransactionsResponse.data.added.length > 0) {
-            console.log(`Found ${pendingTransactionsResponse.data.added.length} pending transactions`);
             allTransactions = [...allTransactions, ...pendingTransactionsResponse.data.added];
         }
-
-        console.log(`Total transactions: ${allTransactions.length}`);
 
         // Format transactions for storage in MongoDB
         // Select only the needed fields to avoid circular references and excessive data

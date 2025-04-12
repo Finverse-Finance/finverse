@@ -23,7 +23,6 @@ function OnboardingWaitForRedirect() {
                 // Reload user to get latest metadata
                 await user.reload();
                 if (user.publicMetadata?.onboardingComplete === true) {
-                    console.log("Redirecting to dashboard after onboarding completion");
                     router.push("/dashboard");
                 } else {
                     // If metadata not updated yet, poll again
@@ -72,7 +71,6 @@ export default function Onboarding() {
                 // Reload user to get latest metadata
                 await user.reload();
                 if (user.publicMetadata?.onboardingComplete === true) {
-                    console.log("User already completed onboarding, redirecting to dashboard");
                     router.push("/dashboard");
                 }
             };
@@ -86,14 +84,12 @@ export default function Onboarding() {
         try {
             setLoading("manual");
             setError(null);
-            console.log("Starting manual onboarding flow");
 
             const formData = new FormData();
             formData.append("onboardingType", "manual");
 
             // Complete onboarding with manual setup
             const result = await completeOnboarding(formData);
-            console.log("Manual onboarding result:", result);
 
             if (result.success) {
                 // Switch to waiting mode to poll for metadata
@@ -113,7 +109,6 @@ export default function Onboarding() {
     const handlePlaidClick = () => {
         setShowPlaid(true);
         setLoading("plaid-init");
-        console.log("Initializing Plaid flow");
         void createLinkToken();
     };
 
@@ -218,11 +213,37 @@ export default function Onboarding() {
 
             if (data.transactions && data.transactions.length > 0) {
                 setLoading("plaid-transactions");
-                console.log(`Processing ${data.transactions.length} transactions...`);
             }
 
             // Short delay to allow transactions to be processed
             await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            // Format data for dashboard
+            setLoading("formatting-data");
+
+            try {
+                const formatResponse = await fetch("/api/format-user-transactions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        clerkId: user?.id,
+                    }),
+                    cache: "no-store",
+                });
+
+                const formatData = await formatResponse.json();
+                if (formatData.error) {
+                    console.warn("Warning: Unable to format data for dashboard:", formatData.error);
+                    // Continue anyway - non-critical
+                } else {
+                    console.log("Dashboard data formatted successfully");
+                }
+            } catch (formatError) {
+                console.warn("Warning: Error formatting data for dashboard:", formatError);
+                // Continue anyway - non-critical
+            }
 
             // Switch to waiting mode to poll for metadata
             setWaitingForRedirect(true);
@@ -358,6 +379,7 @@ export default function Onboarding() {
                                     {loading === "plaid-accounts" && "Fetching account details..."}
                                     {loading === "plaid-save" && "Saving account information..."}
                                     {loading === "plaid-transactions" && "Processing transactions..."}
+                                    {loading === "formatting-data" && "Preparing dashboard data..."}
                                 </p>
                             </div>
                         </div>
