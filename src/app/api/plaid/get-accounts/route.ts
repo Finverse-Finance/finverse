@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
         // Get balance data
         const balanceResponse = await client.accountsBalanceGet({ access_token });
 
-        // Get transaction data for the last 180 days
+        // Get transaction data for the last 365 days
         const now = new Date();
         const startDate = new Date(now);
-        startDate.setDate(now.getDate() - 180); // 180 days ago
+        startDate.setDate(now.getDate() - 365); // 365 days ago
 
         const startDateStr = startDate.toISOString().split("T")[0];
         const endDateStr = now.toISOString().split("T")[0];
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         // Fetch all transactions using pagination
         let allTransactions: any[] = [];
 
-        // First, use transactionsGet to fetch initial transactions
+        // Set up the transaction request
         const initialRequest = {
             access_token,
             start_date: startDateStr,
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
         allTransactions = [...transactionsResponse.data.transactions];
 
         // Continue fetching if there are more transactions
-        while (transactionsResponse.data.transactions.length < transactionsResponse.data.total_transactions) {
+        while (allTransactions.length < transactionsResponse.data.total_transactions) {
             const paginatedRequest = {
                 ...initialRequest,
                 options: {
@@ -83,19 +83,6 @@ export async function POST(req: NextRequest) {
             if (transactionsResponse.data.transactions.length === 0) {
                 break;
             }
-        }
-
-        // Also fetch any pending transactions using transactionsSync
-        const pendingTransactionsResponse = await client.transactionsSync({
-            access_token,
-            options: {
-                include_personal_finance_category: true,
-            },
-        });
-
-        // Add pending transactions to our list
-        if (pendingTransactionsResponse.data.added.length > 0) {
-            allTransactions = [...allTransactions, ...pendingTransactionsResponse.data.added];
         }
 
         // Format transactions for storage in MongoDB

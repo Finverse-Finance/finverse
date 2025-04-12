@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         const { client_user_id } = await req.json();
         const response = await client.linkTokenCreate({
             user: { client_user_id },
-            client_name: "Name your App",
+            client_name: "Finverse",
             products: [Products.Auth, Products.Transactions],
             country_codes: [CountryCode.Us],
             language: "en",
