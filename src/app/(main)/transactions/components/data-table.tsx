@@ -17,7 +17,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTablePagination } from "./data-table-pagination"
+import { DataTablePagination } from "./data-table-pagination";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -71,11 +71,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             <Button
                                 variant="outline"
                                 className={`h-8 ${
-                                    !table.getColumn("type")?.getFilterValue()
+                                    table.getColumn("type")?.getFilterValue() === undefined
                                         ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                         : ""
                                 }`}
-                                onClick={() => table.getColumn("type")?.setFilterValue(null)}
+                                onClick={() => table.getColumn("type")?.setFilterValue(undefined)}
                             >
                                 All
                             </Button>
@@ -103,6 +103,44 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             </Button>
                         </div>
                     )}
+
+                    {table.getColumn("category") && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="h-8">
+                                    {table.getColumn("category")?.getFilterValue()
+                                        ? `Category: ${String(table.getColumn("category")?.getFilterValue())}`
+                                        : "Category"}
+                                    <ChevronDown className="ml-2 h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="z-[100] shadow-md bg-background border"
+                                style={{ backgroundColor: "#fff5eb" }}
+                            >
+                                <DropdownMenuCheckboxItem
+                                    checked={!table.getColumn("category")?.getFilterValue()}
+                                    onCheckedChange={() => table.getColumn("category")?.setFilterValue(undefined)}
+                                >
+                                    All Categories
+                                </DropdownMenuCheckboxItem>
+                                {Array.from(new Set(data.map((item) => (item as any).category as string)))
+                                    .sort()
+                                    .map((category) => (
+                                        <DropdownMenuCheckboxItem
+                                            key={category}
+                                            checked={table.getColumn("category")?.getFilterValue() === category}
+                                            onCheckedChange={() =>
+                                                table.getColumn("category")?.setFilterValue(category)
+                                            }
+                                        >
+                                            {category}
+                                        </DropdownMenuCheckboxItem>
+                                    ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -110,7 +148,11 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             Columns <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent
+                        align="end"
+                        className="z-[100] shadow-md bg-background border"
+                        style={{ backgroundColor: "#fff5eb" }}
+                    >
                         {table
                             .getAllColumns()
                             .filter((column) => column.getCanHide())
@@ -136,7 +178,18 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className={
+                                                header.id === "select" || header.id === "actions"
+                                                    ? "w-[60px]"
+                                                    : header.id === "name"
+                                                      ? "w-auto px-6"
+                                                      : header.id === "amount"
+                                                        ? "text-right"
+                                                        : ""
+                                            }
+                                        >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(header.column.columnDef.header, header.getContext())}
@@ -151,7 +204,18 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell
+                                            key={cell.id}
+                                            className={
+                                                cell.column.id === "select" || cell.column.id === "actions"
+                                                    ? "w-[60px]"
+                                                    : cell.column.id === "name"
+                                                      ? "w-auto px-6"
+                                                      : cell.column.id === "amount"
+                                                        ? "text-right"
+                                                        : ""
+                                            }
+                                        >
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -166,7 +230,6 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                         )}
                     </TableBody>
                 </Table>
-
                 <DataTablePagination table={table} />
             </div>
         </div>

@@ -65,15 +65,9 @@ export const columns: ColumnDef<Transaction>[] = [
                         }
                     >
                         {type === "Income" ? (
-                            <span className="flex items-center gap-1">
-                                <Check className="h-3.5 w-3.5 text-green-600" />
-                                Income
-                            </span>
+                            <span className="flex items-center">Income</span>
                         ) : (
-                            <span className="flex items-center gap-1">
-                                <Filter className="h-3.5 w-3.5 rotate-180 text-red-600" />
-                                Expense
-                            </span>
+                            <span className="flex items-center">Expense</span>
                         )}
                     </Badge>
                 </div>
@@ -102,6 +96,55 @@ export const columns: ColumnDef<Transaction>[] = [
                 </div>
             );
         },
+        filterFn: (row, id, value) => {
+            return value === row.getValue(id);
+        },
+    },
+    {
+        accessorKey: "name",
+        header: ({ column }) => {
+            return (
+                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                    Description
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
+        cell: ({ row }) => {
+            return (
+                <div className="max-w-[400px] truncate font-medium px-4" title={row.getValue("name")}>
+                    {row.getValue("name")}
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "amount",
+        header: ({ column }) => {
+            return (
+                <div className="text-left">
+                    <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                        Amount
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
+            );
+        },
+        cell: ({ row }) => {
+            const amount = parseFloat(row.getValue("amount") as string);
+            const type = row.getValue("type") as string;
+
+            return (
+                <div className="text-left w-full pl-4">
+                    <div className="inline-flex items-center gap-1 justify-start w-[100px]">
+                        <DollarSign className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <span className={`font-medium ${type === "Income" ? "text-green-600" : "text-red-600"}`}>
+                            {amount.toFixed(2)}
+                        </span>
+                    </div>
+                </div>
+            );
+        },
     },
     {
         accessorKey: "date",
@@ -124,50 +167,6 @@ export const columns: ColumnDef<Transaction>[] = [
         },
     },
     {
-        accessorKey: "amount",
-        header: ({ column }) => {
-            return (
-                <div className="text-right">
-                    <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                        Amount
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </Button>
-                </div>
-            );
-        },
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount") as string);
-            const type = row.getValue("type") as string;
-
-            return (
-                <div className="text-right flex justify-end items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    <span className={`font-medium ${type === "Income" ? "text-green-600" : "text-red-600"}`}>
-                        ${amount.toFixed(2)}
-                    </span>
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: "name",
-        header: ({ column }) => {
-            return (
-                <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Description
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-        cell: ({ row }) => {
-            return (
-                <div className="max-w-[300px] truncate font-medium" title={row.getValue("name")}>
-                    {row.getValue("name")}
-                </div>
-            );
-        },
-    },
-    {
         id: "actions",
         cell: ({ row }) => {
             const transaction = row.original;
@@ -180,7 +179,11 @@ export const columns: ColumnDef<Transaction>[] = [
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent
+                        align="end"
+                        className="z-[100] shadow-md bg-background border"
+                        style={{ backgroundColor: "#fff5eb" }}
+                    >
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
                             onClick={() => {
