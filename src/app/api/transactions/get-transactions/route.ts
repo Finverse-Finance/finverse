@@ -41,6 +41,10 @@ export async function GET(req: NextRequest) {
         // Sort by date (newest first)
         formattedTransactions.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+        // Log transactions for debugging
+        console.log(`Returning ${formattedTransactions.length} transactions`);
+        console.log("Transaction IDs:", formattedTransactions.map((t) => t.id).join(", "));
+
         return NextResponse.json({
             transactions: formattedTransactions,
             count: formattedTransactions.length,

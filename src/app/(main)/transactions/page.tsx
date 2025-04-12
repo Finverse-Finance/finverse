@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { DataTable } from "./components/data-table";
-import { columns } from "./components/columns";
 import { Transaction } from "./types";
 import { useAuth } from "@clerk/nextjs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export default function Transactions() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -13,36 +14,38 @@ export default function Transactions() {
     const [error, setError] = useState<string | null>(null);
     const { isLoaded, userId } = useAuth();
 
-    useEffect(() => {
-        async function fetchTransactions() {
-            try {
-                if (!isLoaded || !userId) return;
+    const fetchTransactions = useCallback(async () => {
+        try {
+            if (!isLoaded || !userId) return;
 
-                setLoading(true);
-                const response = await fetch("/api/transactions/get-transactions");
+            setLoading(true);
+            const response = await fetch("/api/transactions/get-transactions");
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch transactions");
-                }
-
-                const data = await response.json();
-                setTransactions(data.transactions || []);
-            } catch (err) {
-                console.error("Error fetching transactions:", err);
-                setError("Failed to load transactions. Please try again later.");
-            } finally {
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error("Failed to fetch transactions");
             }
-        }
 
-        fetchTransactions();
+            const data = await response.json();
+            setTransactions(data.transactions || []);
+        } catch (err) {
+            console.error("Error fetching transactions:", err);
+            setError("Failed to load transactions. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
     }, [isLoaded, userId]);
+
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions]);
 
     return (
         <div className="container mx-auto py-10">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Transactions</h1>
-                {/* Add Transaction button will go here in the next step */}
+                <Button className="bg-amber-500 hover:bg-amber-600 text-white">
+                    <Plus className="mr-2 h-4 w-4" /> Add Transaction
+                </Button>
             </div>
 
             {loading ? (
@@ -53,7 +56,7 @@ export default function Transactions() {
             ) : error ? (
                 <div className="p-4 bg-red-50 text-red-500 rounded-md">{error}</div>
             ) : (
-                <DataTable columns={columns} data={transactions} />
+                <DataTable data={transactions} refreshData={fetchTransactions} />
             )}
         </div>
     );

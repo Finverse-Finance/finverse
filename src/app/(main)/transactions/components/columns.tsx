@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Transaction } from "../types";
-import { Calendar, DollarSign, Tag, ArrowUpDown, MoreHorizontal, Check, Filter } from "lucide-react";
+import { Calendar, DollarSign, Tag, ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,28 +14,62 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
+import EditTransactionDialog from "./edit-transaction-dialog";
+import DeleteTransactionDialog from "./delete-transaction-dialog";
 
-export const columns: ColumnDef<Transaction>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
+// State management for edit/delete dialogs
+interface ActionCellProps {
+    transaction: Transaction;
+    onTransactionUpdated: () => void;
+}
+
+const ActionCell = ({ transaction, onTransactionUpdated }: ActionCellProps) => {
+    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+    return (
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="z-[100] shadow-md bg-white border border-amber-200">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => setShowEditDialog(true)} className="hover:bg-amber-50">
+                        Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                        onClick={() => setShowDeleteDialog(true)}
+                        className="text-red-600 hover:bg-red-50"
+                    >
+                        Delete
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
+            <EditTransactionDialog
+                transaction={showEditDialog ? transaction : null}
+                open={showEditDialog}
+                onOpenChange={setShowEditDialog}
+                onTransactionUpdated={onTransactionUpdated}
             />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
+
+            <DeleteTransactionDialog
+                transaction={showDeleteDialog ? transaction : null}
+                open={showDeleteDialog}
+                onOpenChange={setShowDeleteDialog}
+                onTransactionDeleted={onTransactionUpdated}
             />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
+        </>
+    );
+};
+
+export const createColumns = (onTransactionUpdated: () => void): ColumnDef<Transaction>[] => [
     {
         accessorKey: "type",
         header: ({ column }) => {
@@ -112,7 +146,7 @@ export const columns: ColumnDef<Transaction>[] = [
         },
         cell: ({ row }) => {
             return (
-                <div className="max-w-[400px] truncate font-medium px-4" title={row.getValue("name")}>
+                <div className="max-w-[700px] truncate font-medium px-4" title={row.getValue("name")}>
                     {row.getValue("name")}
                 </div>
             );
@@ -170,42 +204,7 @@ export const columns: ColumnDef<Transaction>[] = [
         id: "actions",
         cell: ({ row }) => {
             const transaction = row.original;
-
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="end"
-                        className="z-[100] shadow-md bg-background border"
-                        style={{ backgroundColor: "#fff5eb" }}
-                    >
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => {
-                                // Will implement edit functionality later
-                                console.log("Edit", transaction);
-                            }}
-                        >
-                            Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                            onClick={() => {
-                                // Will implement delete functionality later
-                                console.log("Delete", transaction);
-                            }}
-                            className="text-red-600"
-                        >
-                            Delete
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            );
+            return <ActionCell transaction={transaction} onTransactionUpdated={onTransactionUpdated} />;
         },
     },
 ];

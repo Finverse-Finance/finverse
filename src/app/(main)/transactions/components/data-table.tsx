@@ -25,17 +25,27 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { createColumns } from "./columns";
+import { Transaction } from "../types";
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
+interface DataTableProps {
+    data: Transaction[];
+    refreshData: () => Promise<void>;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable({ data, refreshData }: DataTableProps) {
     const [sorting, setSorting] = React.useState<SortingState>([{ id: "date", desc: true }]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
+
+    // Function to refresh data after transaction update/delete
+    const handleRefresh = React.useCallback(() => {
+        // Use the provided refreshData function instead of reloading the page
+        refreshData();
+    }, [refreshData]);
+
+    // Create columns with the refresh callback
+    const columns = React.useMemo(() => createColumns(handleRefresh), [handleRefresh]);
 
     const table = useReactTable({
         data,
@@ -47,12 +57,10 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
-            rowSelection,
         },
     });
 
@@ -125,7 +133,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                                 >
                                     All Categories
                                 </DropdownMenuCheckboxItem>
-                                {Array.from(new Set(data.map((item) => (item as any).category as string)))
+                                {Array.from(new Set(data.map((item) => item.category)))
                                     .sort()
                                     .map((category) => (
                                         <DropdownMenuCheckboxItem
@@ -181,7 +189,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                                         <TableHead
                                             key={header.id}
                                             className={
-                                                header.id === "select" || header.id === "actions"
+                                                header.id === "actions"
                                                     ? "w-[60px]"
                                                     : header.id === "name"
                                                       ? "w-auto px-6"
@@ -204,18 +212,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                             table.getRowModel().rows.map((row) => (
                                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell
-                                            key={cell.id}
-                                            className={
-                                                cell.column.id === "select" || cell.column.id === "actions"
-                                                    ? "w-[60px]"
-                                                    : cell.column.id === "name"
-                                                      ? "w-auto px-6"
-                                                      : cell.column.id === "amount"
-                                                        ? "text-right"
-                                                        : ""
-                                            }
-                                        >
+                                        <TableCell key={cell.id}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
@@ -224,12 +221,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
+                                    No transactions found
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
+            </div>
+            <div className="mt-4">
                 <DataTablePagination table={table} />
             </div>
         </div>
