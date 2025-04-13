@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const db = (await clientPromise).db("finverse");
+        const db = clientPromise.db("finverse");
         const collection = db.collection("users");
 
         const user = await collection.findOne({ clerkId });
@@ -33,9 +33,7 @@ export async function GET(req: NextRequest) {
                 day: "numeric",
             });
 
-            const category = Array.isArray(t.category) && t.category.length > 0
-                ? t.category[0]
-                : "Uncategorized";
+            const category = Array.isArray(t.category) && t.category.length > 0 ? t.category[0] : "Uncategorized";
 
             const amountFormatted = `${isIncome ? "+" : "-"}$${Math.abs(numericAmount).toFixed(2)}`;
 

@@ -102,8 +102,22 @@ export async function completeOnboarding(formData: FormData) {
 
             // For manual users, initialize with an empty transactions array
             if (onboardingType === "manual") {
-                // Initialize with empty transactions array
-                Object.assign(userData, { transactions: [] });
+                // Initialize with empty transactions array and financials
+                Object.assign(userData, {
+                    transactions: [],
+                    financials: {
+                        totalIncome: 0,
+                        totalExpenses: 0,
+                        incomeTransactions: [],
+                        expenseTransactions: [],
+                        incomeByDate: {},
+                        expensesByDate: {},
+                        incomeByCategory: {},
+                        expensesByCategory: {},
+                        currentBalance: 0,
+                        lastUpdated: new Date(),
+                    },
+                });
             } else {
                 // For Plaid users, initialize with empty array
                 Object.assign(userData, { transactions: [] });
@@ -209,6 +223,34 @@ export async function updateUserWithPlaidData(plaidData: PlaidData) {
                     ...plaidData.financials,
                     lastUpdated: new Date(),
                 };
+            } else {
+                updateData.financials = {
+                    totalIncome: 0,
+                    totalExpenses: 0,
+                    incomeTransactions: [],
+                    expenseTransactions: [],
+                    incomeByDate: {},
+                    expensesByDate: {},
+                    incomeByCategory: {},
+                    expensesByCategory: {},
+                    lastUpdated: new Date(),
+                };
+            }
+
+            // Set initial currentBalance from Plaid account
+            if (plaidData.accounts && plaidData.accounts.length > 0) {
+                const primaryAccount = plaidData.accounts[0];
+                if (primaryAccount.balances) {
+                    if (typeof primaryAccount.balances.available === "number") {
+                        updateData.financials.currentBalance = Number(
+                            Number(primaryAccount.balances.available).toFixed(2)
+                        );
+                    } else if (typeof primaryAccount.balances.current === "number") {
+                        updateData.financials.currentBalance = Number(
+                            Number(primaryAccount.balances.current).toFixed(2)
+                        );
+                    }
+                }
             }
 
             // Update the user document with all data

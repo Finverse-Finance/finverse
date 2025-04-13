@@ -49,6 +49,7 @@ export async function PUT(req: NextRequest) {
 
         // Create updated transaction object (preserve fields not included in the update)
         const existingTransaction = user.transactions[transactionIndex];
+        const oldAmount = existingTransaction.amount;
         const updatedTransaction = {
             ...existingTransaction,
             amount: formattedAmount,
@@ -59,10 +60,23 @@ export async function PUT(req: NextRequest) {
             notes: notes,
         };
 
+        // Calculate the difference in amount to update the balance
+        const amountDifference = formattedAmount - oldAmount;
+
+        // Get current balance and update it
+        let currentBalance = user.financials?.currentBalance || 0;
+        currentBalance += amountDifference;
+        currentBalance = Number(Number(currentBalance).toFixed(2)); // Format to 2 decimal places
+
         // Update the transaction in the array
         const updateResult = await collection.updateOne(
             { clerkId: userId, "transactions.transaction_id": id },
-            { $set: { "transactions.$": updatedTransaction } as any }
+            {
+                $set: {
+                    "transactions.$": updatedTransaction,
+                    "financials.currentBalance": currentBalance,
+                } as any,
+            }
         );
 
         if (!updateResult.acknowledged) {

@@ -22,6 +22,23 @@ export async function DELETE(req: NextRequest) {
         const db = clientPromise.db("finverse");
         const collection = db.collection("users");
 
+        // Get the user and transaction details
+        const user = await collection.findOne({ clerkId: userId });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Find the transaction to be deleted to get its amount
+        const transactionToDelete = user.transactions.find((t: any) => t.transaction_id === transactionId);
+        if (!transactionToDelete) {
+            return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
+        }
+
+        // Get current balance and subtract the transaction amount (since we're removing this transaction)
+        let currentBalance = user.financials?.currentBalance || 0;
+        currentBalance -= transactionToDelete.amount; // Subtract the amount (negative for expenses, positive for income)
+        currentBalance = Number(Number(currentBalance).toFixed(2)); // Format to 2 decimal places
+
         // Remove the transaction from the user's transactions array
         console.log(`Attempting to delete transaction with ID: ${transactionId}`);
 
@@ -35,8 +52,11 @@ export async function DELETE(req: NextRequest) {
                     transactions: {
                         transaction_id: transactionId,
                     },
-                },
-            } as any
+                } as any,
+                $set: {
+                    "financials.currentBalance": currentBalance,
+                } as any,
+            }
         );
 
         console.log(

@@ -54,10 +54,26 @@ export async function POST(req: NextRequest) {
         const db = clientPromise.db("finverse");
         const collection = db.collection("users");
 
+        // Get the user and current balance
+        const user = await collection.findOne({ clerkId: userId });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Get current balance - default to 0 if not exists
+        let currentBalance = user.financials?.currentBalance || 0;
+
+        // Update balance with the new transaction amount
+        currentBalance += formattedAmount; // Add amount (positive for income, negative for expense)
+        currentBalance = Number(Number(currentBalance).toFixed(2)); // Format to 2 decimal places
+
         // Add the transaction to the user's transactions array
         const updateResult = await collection.updateOne(
             { clerkId: userId },
-            { $push: { transactions: transaction } as any }
+            {
+                $push: { transactions: transaction } as any,
+                $set: { "financials.currentBalance": currentBalance } as any,
+            }
         );
 
         if (!updateResult.acknowledged) {

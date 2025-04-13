@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
             expensesByDate: {} as Record<string, number>,
             incomeByCategory: {} as Record<string, number>,
             expensesByCategory: {} as Record<string, number>,
+            currentBalance: user.financials?.currentBalance || 0, // Preserve current balance or default to 0
         };
 
         // Process transactions
@@ -135,6 +136,15 @@ export async function POST(req: NextRequest) {
                 financials.expensesByCategory[category] += amount;
             }
         });
+
+        // Update currentBalance based on transactions
+        // Start with initial balance from plaidData if available
+        if (!financials.currentBalance && user.plaidData?.accounts && user.plaidData.accounts.length > 0) {
+            const primaryAccount = user.plaidData.accounts[0];
+            if (primaryAccount.balances && typeof primaryAccount.balances.available === "number") {
+                financials.currentBalance = Number(Number(primaryAccount.balances.available).toFixed(2));
+            }
+        }
 
         // Format all numeric values to 2 decimal places in formattedData
         Object.keys(formattedData.allTimeData.byDate).forEach((date) => {
