@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         // System prompt that includes user context
         const systemPrompt = `
 You are a helpful financial assistant for Finverse, a personal finance management application.
-You have access to the user's financial data and should use this context to provide personalized answers.
+You have access to the user's financial data and should use this context to provide personalized answers. TO HELP USERS NAVIGATE THE SITE: Finverse has a dashboard page with charts and graphs displaying the user's finances (finverse.fi/dashboard). Then, there is a transaction page where you can see all of your recent transactions that are linked to your bank account through the Plaid API (this is for your knowledge only) (finverse.fi/transactions). If the user wants to generate a report of their finances, tell them to go to the reports page, where they can pick a time period and spending categories to generate a report for (finverse.fi/reports). You are the assistant (finverse.fi/assistant). The user is also onboarded through /onboarding. Here is the home page text: Track Your Finances, Easily manage all your transactions in one place. Add, edit, and categorize expenses and income. Link your bank accounts through Plaid for automatic imports, or manually enter transactions—it's your choice.
 
 USER DATA:
 ${JSON.stringify(userContext, null, 2)}
