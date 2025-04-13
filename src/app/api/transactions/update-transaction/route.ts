@@ -24,9 +24,9 @@ export async function PUT(req: NextRequest) {
         // Format transaction amount (income is negative, expense is positive in our system)
         let formattedAmount = Number(Number(amount).toFixed(2));
         if (type === "Income") {
-            formattedAmount = -Math.abs(formattedAmount); // Make negative for income
+            formattedAmount = Math.abs(formattedAmount); // Make positive for income
         } else {
-            formattedAmount = Math.abs(formattedAmount); // Make positive for expense
+            formattedAmount = -Math.abs(formattedAmount); // Make negative for expense
         }
 
         // Connect to MongoDB

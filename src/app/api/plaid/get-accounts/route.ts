@@ -121,19 +121,19 @@ export async function POST(req: NextRequest) {
         });
 
         // Separate income and expense transactions
-        // In Plaid, negative amounts are typically expenses, positive are income
+        // Positive amounts are income, negative are expenses
         const incomeTransactions = formattedTransactions
-            .filter((tx) => tx.amount < 0)
-            .map((tx) => ({
-                ...tx,
-                amount: Number(Math.abs(tx.amount).toFixed(2)), // Convert to positive and round to 2 decimal places
-            }));
-
-        const expenseTransactions = formattedTransactions
             .filter((tx) => tx.amount > 0)
             .map((tx) => ({
                 ...tx,
-                amount: Number(tx.amount.toFixed(2)), // Round to 2 decimal places
+                amount: Number(tx.amount.toFixed(2)), // Keep positive and round to 2 decimal places
+            }));
+
+        const expenseTransactions = formattedTransactions
+            .filter((tx) => tx.amount < 0)
+            .map((tx) => ({
+                ...tx,
+                amount: Number(Math.abs(tx.amount).toFixed(2)), // Convert to positive for display and round to 2 decimal places
             }));
 
         // Calculate total income and expenses

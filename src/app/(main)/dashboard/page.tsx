@@ -8,11 +8,14 @@ import { IncomeExpenseChart } from "@/components/ui/incomeExpenseChart";
 import { CategoryPieChart } from "@/components/ui/categoryPieChart";
 import { MonthlyBarCharts } from "@/components/ui/monthlyBarChart";
 import { RecentTransactions } from "@/components/ui/recentTransactions";
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function Dashboard() {
     const { user, isLoaded } = useUser();
     const [isPolling, setIsPolling] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [availableBalance, setAvailableBalance] = useState<number | null>(null);
     const [monthlyIncome, setMonthlyIncome] = useState<number>(0);
     const [monthlyExpenses, setMonthlyExpenses] = useState<number>(0);
@@ -34,40 +37,40 @@ export default function Dashboard() {
         }
     }, [isLoaded, user, router]);
 
-    useEffect(() => {
-        const fetchMongoBalance = async () => {
-            const clerkId = user?.id;
-            if (!clerkId) return;
+    // Extract fetchMongoBalance to be used both in useEffect and refresh function
+    const fetchMongoBalance = async () => {
+        const clerkId = user?.id;
+        if (!clerkId) return;
 
-            try {
-                const res = await fetch(`/api/plaid/get-user-financials?clerkId=${clerkId}`);
-                const data = await res.json();
+        try {
+            const res = await fetch(`/api/plaid/get-user-financials?clerkId=${clerkId}`);
+            const data = await res.json();
 
-                if (data?.balance) {
-                    setAvailableBalance(data.balance);
-                }
-
-                const summaryRes = await fetch(`/api/plaid/get-monthly-summary?clerkId=${clerkId}`);
-                const summaryData = await summaryRes.json();
-                if (Array.isArray(summaryData) && summaryData.length > 0) {
-                    const latestMonth = summaryData[summaryData.length - 1];
-                    setMonthlyIncome(latestMonth.Income ?? 0);
-                    setMonthlyExpenses(latestMonth.Expenses ?? 0);
-
-                    // Calculate spending % vs. previous average
-                    const previousMonths = summaryData.slice(0, -1);
-                    const avgExpense =
-                        previousMonths.reduce((acc, curr) => acc + (curr.Expenses || 0), 0) /
-                        Math.max(previousMonths.length, 1);
-                    const percent =
-                        latestMonth.Expenses && avgExpense ? (latestMonth.Expenses / avgExpense) * 100 : null;
-                    setSpendingPercent(percent);
-                }
-            } catch (err) {
-                console.error("Error fetching from MongoDB:", err);
+            if (data?.balance) {
+                setAvailableBalance(data.balance);
             }
-        };
 
+            const summaryRes = await fetch(`/api/plaid/get-monthly-summary?clerkId=${clerkId}`);
+            const summaryData = await summaryRes.json();
+            if (Array.isArray(summaryData) && summaryData.length > 0) {
+                const latestMonth = summaryData[summaryData.length - 1];
+                setMonthlyIncome(latestMonth.Income ?? 0);
+                setMonthlyExpenses(latestMonth.Expenses ?? 0);
+
+                // Calculate spending % vs. previous average
+                const previousMonths = summaryData.slice(0, -1);
+                const avgExpense =
+                    previousMonths.reduce((acc, curr) => acc + (curr.Expenses || 0), 0) /
+                    Math.max(previousMonths.length, 1);
+                const percent = latestMonth.Expenses && avgExpense ? (latestMonth.Expenses / avgExpense) * 100 : null;
+                setSpendingPercent(percent);
+            }
+        } catch (err) {
+            console.error("Error fetching from MongoDB:", err);
+        }
+    };
+
+    useEffect(() => {
         if (isLoaded && user) {
             fetchMongoBalance();
         }
@@ -125,9 +128,49 @@ export default function Dashboard() {
             : "None"
         : "Loading...";
 
+    const refreshDashboardData = async () => {
+        if (!user) return;
+
+        setIsRefreshing(true);
+        try {
+            const response = await fetch("/api/refresh-dashboard-data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (response.ok) {
+                toast.success("Dashboard data refreshed successfully");
+                // Refetch the data to update the UI
+                await fetchMongoBalance();
+            } else {
+                const errorData = await response.json();
+                toast.error(`Failed to refresh: ${errorData.error || "Unknown error"}`);
+            }
+        } catch (error) {
+            console.error("Error refreshing dashboard:", error);
+            toast.error("Failed to refresh dashboard data");
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold">Dashboard</h1>
+                <Button
+                    onClick={refreshDashboardData}
+                    disabled={isRefreshing}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1"
+                >
+                    <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                    {isRefreshing ? "Refreshing..." : "Refresh Data"}
+                </Button>
+            </div>
 
             {isPolling && (
                 <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded mb-6">
@@ -157,11 +200,11 @@ export default function Dashboard() {
                     <div className="mt-6 space-y-3">
                         <div className="flex items-center gap-2 text-green-600">
                             <ArrowUpIcon className="h-5 w-5" />
-                            <span>This Month’s Income: ${monthlyIncome.toLocaleString()}</span>
+                            <span>This Month's Income: ${monthlyIncome.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2 text-red-600">
                             <ArrowDownIcon className="h-5 w-5" />
-                            <span>This Month’s Expenses: ${monthlyExpenses.toLocaleString()}</span>
+                            <span>This Month's Expenses: ${monthlyExpenses.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
@@ -174,7 +217,7 @@ export default function Dashboard() {
                     </p>
                     <p className="text-sm text-gray-500 mt-2">
                         {spendingPercent !== null
-                            ? `You’ve spent ${(spendingPercent - 100).toFixed(0)}% more than your average monthly spending so far.`
+                            ? `You've spent ${(spendingPercent - 100).toFixed(0)}% more than your average monthly spending so far.`
                             : "Calculating spending comparison..."}
                     </p>
                 </div>

@@ -18,7 +18,7 @@ export default tseslint.config(
             ...tseslint.configs.stylisticTypeChecked,
         ],
         rules: {
-            "@/prefer-const": "warn",
+            "prefer-const": "warn",
             "@typescript-eslint/no-unused-vars": "warn",
             "@typescript-eslint/prefer-nullish-coalescing": "warn",
             "@typescript-eslint/no-unsafe-assignment": "warn",
@@ -37,6 +37,7 @@ export default tseslint.config(
             "@typescript-eslint/no-misused-promises": "warn",
             "@typescript-eslint/no-unsafe-return": "warn",
             "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+            "react/no-unescaped-entities": "warn",
         },
     },
     {

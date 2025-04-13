@@ -31,9 +31,9 @@ export async function POST(req: NextRequest) {
         // Format transaction amount (income is stored as negative amount in our system)
         let formattedAmount = Number(Number(amount).toFixed(2));
         if (isIncome) {
-            formattedAmount = -Math.abs(formattedAmount); // Make negative for income
+            formattedAmount = Math.abs(formattedAmount); // Make positive for income
         } else {
-            formattedAmount = Math.abs(formattedAmount); // Make positive for expense
+            formattedAmount = -Math.abs(formattedAmount); // Make negative for expense
         }
 
         // Create transaction object

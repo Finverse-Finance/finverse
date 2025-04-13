@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
             const monthKey = dateKey.substring(0, 7);
 
             // Is this an income or expense?
-            const isIncome = amount < 0; // In Plaid, negative amounts are income (deposits)
+            const isIncome = amount > 0; // FIXED: Positive amounts are income, negative are expenses
 
             // Update formattedData structure
             // Update daily data
