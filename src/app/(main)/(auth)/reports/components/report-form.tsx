@@ -67,7 +67,11 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                             <SelectValue placeholder="Select time range" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-white dark:bg-gray-900 border shadow-md z-50">
+                                    <SelectContent
+                                        className="relative z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80"
+                                        position="popper"
+                                        sideOffset={5}
+                                    >
                                         <SelectItem value="Daily">Daily</SelectItem>
                                         <SelectItem value="Weekly">Weekly</SelectItem>
                                         <SelectItem value="Monthly">Monthly</SelectItem>
@@ -124,14 +128,15 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                         </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent
-                                        className="w-full p-0 bg-white dark:bg-gray-900 border shadow-md z-50"
+                                        className="relative z-50 w-[var(--radix-popover-trigger-width)] rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-none animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                                         align="start"
+                                        sideOffset={5}
                                     >
-                                        <Command className="bg-white dark:bg-gray-900">
+                                        <Command className="overflow-hidden rounded-md bg-popover">
                                             <CommandInput placeholder="Search categories..." className="h-9" />
-                                            <CommandList className="max-h-[300px] overflow-y-auto bg-white dark:bg-gray-900">
+                                            <CommandList className="max-h-[300px] overflow-y-auto">
                                                 <CommandEmpty>No categories found.</CommandEmpty>
-                                                <CommandGroup className="p-1">
+                                                <CommandGroup>
                                                     {categories.map((category) => {
                                                         const selectedCategories = field.value || [];
                                                         const isSelected = selectedCategories.includes(category);
@@ -140,7 +145,6 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                                             <CommandItem
                                                                 key={category}
                                                                 value={category}
-                                                                className="px-2 py-1.5 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                                                                 onSelect={() => {
                                                                     const currentValue = field.value || [];
                                                                     const newValue = isSelected
@@ -151,6 +155,7 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
 
                                                                     form.setValue("categories", newValue);
                                                                 }}
+                                                                className="px-2 py-1.5 text-sm rounded-sm aria-selected:bg-accent aria-selected:text-accent-foreground flex items-center"
                                                             >
                                                                 <div
                                                                     className={cn(
