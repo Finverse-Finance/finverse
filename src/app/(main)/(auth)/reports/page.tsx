@@ -21,8 +21,8 @@ interface SavedReport {
 
 const LoadingOverlay = ({ message }: { message: string }) => {
     return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 loading-overlay">
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-xl loading-container">
+        <div className="fixed inset-0 bg-white/50 flex items-center justify-center z-50 loading-overlay">
+            <div className="bg-white dark:bg-white-900 p-6 rounded-lg shadow-xl loading-container">
                 <div className="flex flex-col items-center gap-3 min-w-[300px]">
                     <LoaderIcon className="animate-spin h-10 w-10 loading-spinner" />
                     <p className="text-center loading-message">{message}</p>
