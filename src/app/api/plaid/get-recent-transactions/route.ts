@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const db = clientPromise.db("finverse");
+        const db = (await clientPromise).db("finverse");
         const collection = db.collection("users");
 
         const user = await collection.findOne({ clerkId });
@@ -25,19 +25,25 @@ export async function GET(req: NextRequest) {
             .slice(0, 5);
 
         const formatted = sorted.map((t) => {
-            const type = t.personal_finance_category?.primary || "UNKNOWN";
-            const category = Array.isArray(t.category) && t.category.length > 0 ? t.category[0] : "Uncategorized";
+            const numericAmount = Number(t.amount);
+            const isIncome = numericAmount >= 0;
+
             const formattedDate = new Date(t.date).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
             });
-            const amount = `${type === "INCOME" ? "+" : "-"}$${Number(t.amount).toFixed(2)}`;
+
+            const category = Array.isArray(t.category) && t.category.length > 0
+                ? t.category[0]
+                : "Uncategorized";
+
+            const amountFormatted = `${isIncome ? "+" : "-"}$${Math.abs(numericAmount).toFixed(2)}`;
 
             return {
                 date: formattedDate,
-                amount,
+                amount: amountFormatted,
                 category,
-                type: type === "INCOME" ? "Income" : "Expense",
+                type: isIncome ? "Income" : "Expense",
             };
         });
 
