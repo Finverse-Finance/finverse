@@ -182,7 +182,11 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                     />
                 </div>
 
-                <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
+                <Button
+                    type="submit"
+                    className="w-full md:w-auto bg-black hover:bg-gray-800 dark:bg-black dark:hover:bg-gray-900 text-white text-sm font-medium"
+                    disabled={isLoading}
+                >
                     {isLoading ? "Generating Report..." : "Generate Report"}
                     {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
