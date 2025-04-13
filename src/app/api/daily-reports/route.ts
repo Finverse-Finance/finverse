@@ -145,18 +145,18 @@ export async function POST(req: NextRequest) {
            - Total spent vs. total income
            - Net difference (savings or overspending)
            - Notable spending patterns and any outlier transactions
-           - A brief analysis that varies depending on whether the report covers a day, week, month, or all time.
+           - A detailed analysis that varies depending on whether the report covers a day, week, month, or all time.
 
         2. **Time Range Analysis:**
            - For ${timeRange} reports, include trends or comparisons with previous periods when relevant.
         
         3. **Category Reports:**
-           - Break down spending by category and highlight the top 1-2 spending categories.
+           - Break down spending by each category and then highlight the top 1-2 spending categories.
            - Offer insights if there is an unusual pattern or if the user consistently overspends in certain categories.
         
         4. **Custom Insights:**
            - Analyze the data with error free logic to provide all necessary info for understanding financial behavior.
-           - Tailor the analysis based on any additional filters or customizations provided by the user.
+           - Tailor the analysis specifically to the user and be unique and friendly.
 
         IMPORTANT INSTRUCTIONS:
         1. The transactions and accounts data are provided below. DO NOT ask for data - it's already included in this prompt.
