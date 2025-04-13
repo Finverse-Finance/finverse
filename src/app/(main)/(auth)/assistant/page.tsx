@@ -14,7 +14,7 @@ export default function Assistant() {
 
     return (
         <div className="flex flex-col h-[calc(100vh-64px)] items-center bg-gray-50 py-6">
-            <div className="w-full max-w-4xl mx-auto px-6">
+            <div className="w-full max-w-5xl mx-auto px-6">
                 <h1 className="text-3xl font-bold">Finance Assistant</h1>
                 <p className="text-gray-500 mt-2 mb-6 text-lg">
                     Ask questions about your financial data and get personalized answers!

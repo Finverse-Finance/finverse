@@ -137,7 +137,7 @@ export default function DailyReports() {
     };
 
     return (
-        <div className="container max-w-6xl mx-auto px-4 py-8 daily-reports-page">
+        <div className="container max-w-7xl mx-auto px-4 py-8 daily-reports-page">
             {isLoading && <LoadingOverlay message="Generating Your Financial Report" />}
 
             <div className="flex flex-col space-y-2 mb-8">
