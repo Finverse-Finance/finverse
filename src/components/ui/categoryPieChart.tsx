@@ -33,6 +33,24 @@ export function CategoryPieChart() {
         }
     }, [user, isLoaded]);
 
+    const total = data.reduce((sum, entry) => sum + entry.value, 0);
+
+    const renderCustomTooltip = ({ active, payload }: any) => {
+        if (active && payload && payload.length) {
+            const { name, value } = payload[0];
+            const percentage = ((value / total) * 100).toFixed(1);
+            return (
+                <div className="bg-white border rounded px-3 py-2 shadow text-sm">
+                    <p className="font-medium">{name}</p>
+                    <p>
+                        ${value.toLocaleString()} ({percentage}%)
+                    </p>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <motion.div
             className="bg-white p-6 rounded-lg shadow-md"
@@ -48,7 +66,7 @@ export function CategoryPieChart() {
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                     </Pie>
-                    <Tooltip formatter={(value: number) => `$${value}`} />
+                    <Tooltip content={renderCustomTooltip} />
                     <Legend />
                 </PieChart>
             </ResponsiveContainer>
