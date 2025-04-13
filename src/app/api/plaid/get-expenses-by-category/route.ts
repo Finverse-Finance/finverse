@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
                 .replace(/_/g, " ")
                 .toLowerCase()
                 .replace(/\b\w/g, (l) => l.toUpperCase()), // Prettify name
-            value,
+            value: Math.abs(Number(value)),
         }));
 
         return NextResponse.json(formattedData);

@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
         Object.entries(expensesByDate).forEach(([date, amount]) => {
             const key = getMonthYearKey(date);
             const numericAmount = typeof amount === "number" ? amount : Number(amount) || 0;
-            monthlyExpenses[key] = (monthlyExpenses[key] ?? 0) + numericAmount;
+            monthlyExpenses[key] = (monthlyExpenses[key] ?? 0) + Math.abs(numericAmount);
         });
 
         // Merge unique month keys
