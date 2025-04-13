@@ -25,10 +25,7 @@ export function IncomeExpenseChart() {
 
             if (Array.isArray(json)) {
                 const formatted = json.map((entry) => ({
-                    date: new Date(entry.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                    }),
+                    date: entry.date,
                     Income: entry.Income ?? 0,
                     Expenses: entry.Expenses ?? 0,
                 }));

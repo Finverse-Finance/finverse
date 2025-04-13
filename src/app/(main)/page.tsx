@@ -75,7 +75,7 @@ export default function HomePage() {
             {/* How It Works Section */}
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">How Finverse Works</h2>
+                    <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">How to use Finverse</h2>
 
                     <div className="max-w-3xl mx-auto">
                         <Accordion type="single" collapsible className="w-full">
@@ -125,31 +125,6 @@ export default function HomePage() {
                             </AccordionItem>
                         </Accordion>
                     </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-16 md:py-20">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-6 text-gray-900">Ready to Take Control of Your Finances?</h2>
-                    <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                        Join thousands of students who are managing their money smarter with Finverse.
-                    </p>
-                    <SignedOut>
-                        <SignInButton>
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block">
-                                Sign Up Now
-                            </button>
-                        </SignInButton>
-                    </SignedOut>
-                    <SignedIn>
-                        <Link
-                            href="/dashboard"
-                            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block"
-                        >
-                            Go to Dashboard
-                        </Link>
-                    </SignedIn>
                 </div>
             </section>
         </div>

@@ -28,17 +28,12 @@ export async function GET(req: NextRequest) {
             const numericAmount = Number(t.amount);
             const isIncome = numericAmount >= 0;
 
-            const formattedDate = new Date(t.date).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-            });
-
             const category = Array.isArray(t.category) && t.category.length > 0 ? t.category[0] : "Uncategorized";
 
             const amountFormatted = `${isIncome ? "+" : "-"}$${Math.abs(numericAmount).toFixed(2)}`;
 
             return {
-                date: formattedDate,
+                date: t.date,
                 amount: amountFormatted,
                 category,
                 type: isIncome ? "Income" : "Expense",
