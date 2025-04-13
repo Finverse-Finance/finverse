@@ -82,18 +82,6 @@ All authenticated pages (except the public homepage) have a fixed sidebar for ea
 
     - Integrated search capabilities allow users to retrieve specific details from their transactions, reports, or account history.
 
-- **Wallet ("/wallet") & Settings ("/settings"):**
-
-    - The Wallet page allows management of financial accounts (manual account creation, editing, and deletion; Plaid-linked accounts are shown as live read-only).
-
-    - The Settings page lets users select their preferred currency and toggle notification preferences. Fixed conversion rates are applied:
-
-        - 1 USD = 0.89 EUR
-
-        - 1 USD = 1.40 CAD
-
-        - 1 USD = 0.77 GBP
-
 ### Navigation Summary
 
 - The **public homepage ("/")** features a top navbar for public access.
