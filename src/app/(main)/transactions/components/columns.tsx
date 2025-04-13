@@ -146,7 +146,7 @@ export const createColumns = (onTransactionUpdated: () => void): ColumnDef<Trans
         },
         cell: ({ row }) => {
             return (
-                <div className="max-w-[700px] truncate font-medium px-4" title={row.getValue("name")}>
+                <div className="max-w-[600px] truncate font-medium px-4" title={row.getValue("name")}>
                     {row.getValue("name")}
                 </div>
             );

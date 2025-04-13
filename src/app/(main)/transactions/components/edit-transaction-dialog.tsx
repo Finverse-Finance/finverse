@@ -146,11 +146,7 @@ export default function EditTransactionDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Type</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        value={field.value}
-                                    >
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Select type" />
@@ -161,7 +157,7 @@ export default function EditTransactionDialog({
                                             <SelectItem value="Expense">Expense</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -172,7 +168,7 @@ export default function EditTransactionDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Category</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Select a category" />
@@ -186,7 +182,7 @@ export default function EditTransactionDialog({
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -200,7 +196,7 @@ export default function EditTransactionDialog({
                                     <FormControl>
                                         <Input type="date" {...field} className="bg-white" />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -214,7 +210,7 @@ export default function EditTransactionDialog({
                                     <FormControl>
                                         <Input placeholder="0.00" {...field} className="bg-white" />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -228,7 +224,7 @@ export default function EditTransactionDialog({
                                     <FormControl>
                                         <Input placeholder="Transaction description" {...field} className="bg-white" />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -246,7 +242,7 @@ export default function EditTransactionDialog({
                                             className="bg-white"
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />

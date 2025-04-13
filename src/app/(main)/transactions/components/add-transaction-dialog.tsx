@@ -71,9 +71,34 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
         },
     });
 
+    // Reset form when dialog closes
+    const handleOpenChange = (newOpen: boolean) => {
+        if (!newOpen) {
+            // Keep the current type value when closing
+            const currentType = form.getValues().type;
+            form.reset({
+                type: currentType,
+                category: "",
+                date: new Date(),
+                amount: "",
+                name: "",
+                notes: "",
+            });
+        }
+        onOpenChange(newOpen);
+    };
+
     const onSubmit = async (values: FormValues) => {
         setIsSaving(true);
         try {
+            // Format amount - API needs the proper sign based on transaction type
+            let formattedAmount = Number(Number(values.amount).toFixed(2));
+            if (values.type === "Income") {
+                formattedAmount = Math.abs(formattedAmount); // Make positive for income
+            } else {
+                formattedAmount = -Math.abs(formattedAmount); // Make negative for expense
+            }
+
             const response = await fetch("/api/transactions/add-transaction", {
                 method: "POST",
                 headers: {
@@ -83,9 +108,10 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                     type: values.type,
                     category: values.category,
                     date: format(values.date, "yyyy-MM-dd"),
-                    amount: values.amount,
+                    amount: formattedAmount.toString(),
                     name: values.name,
                     notes: values.notes,
+                    isIncome: values.type === "Income", // Add this flag for the API
                 }),
             });
 
@@ -115,7 +141,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[500px] bg-[#fff5eb] border-amber-200 shadow-lg">
                 <DialogHeader>
                     <DialogTitle className="text-amber-800 text-xl">Add New Transaction</DialogTitle>
@@ -129,11 +155,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Type</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        value={field.value}
-                                    >
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Select type" />
@@ -144,7 +166,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                             <SelectItem value="Expense">Expense</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -155,7 +177,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Category</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Select a category" />
@@ -169,7 +191,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -211,7 +233,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                             />
                                         </PopoverContent>
                                     </Popover>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -225,7 +247,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                     <FormControl>
                                         <Input placeholder="0.00" {...field} className="bg-white" />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -239,7 +261,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                     <FormControl>
                                         <Input placeholder="Transaction description" {...field} className="bg-white" />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
@@ -257,7 +279,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
                                             className="bg-white"
                                         />
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage className="text-red-500" />
                                 </FormItem>
                             )}
                         />
