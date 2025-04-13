@@ -68,7 +68,7 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent
-                                        className="relative z-50 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80"
+                                        className="relative z-50 overflow-hidden rounded-md border bg-white text-popover-foreground shadow-md animate-in fade-in-80"
                                         position="popper"
                                         sideOffset={5}
                                     >
@@ -128,11 +128,11 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                         </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent
-                                        className="relative z-50 w-[var(--radix-popover-trigger-width)] rounded-md border bg-popover p-0 text-popover-foreground shadow-md outline-none animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                                        className="relative z-50 w-[var(--radix-popover-trigger-width)] rounded-md border bg-white p-0 text-popover-foreground shadow-md outline-none animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                                         align="start"
                                         sideOffset={5}
                                     >
-                                        <Command className="overflow-hidden rounded-md bg-popover">
+                                        <Command className="overflow-hidden rounded-md bg-white">
                                             <CommandInput placeholder="Search categories..." className="h-9" />
                                             <CommandList className="max-h-[300px] overflow-y-auto">
                                                 <CommandEmpty>No categories found.</CommandEmpty>
