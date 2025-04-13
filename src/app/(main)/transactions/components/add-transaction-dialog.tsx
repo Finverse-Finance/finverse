@@ -94,7 +94,7 @@ export default function AddTransactionDialog({ open, onOpenChange, onTransaction
             if (response.ok) {
                 toast.success("Transaction added successfully");
                 form.reset({
-                    type: "Expense",
+                    type: values.type,
                     category: "",
                     date: new Date(),
                     amount: "",
