@@ -50,15 +50,21 @@ export function RecentTransactions() {
                     </tr>
                 </thead>
                 <tbody>
-                    {transactions.map((tx, index) => (
-                        <tr key={index} className="border-b last:border-none hover:bg-gray-50 transition">
-                            <td className="py-2">{tx.date}</td>
-                            <td className="py-2">{tx.amount}</td>
-                            <td className="py-2">{tx.category}</td>
-                            <td className="py-2">{tx.type}</td>
-                        </tr>
-                    ))}
-                </tbody>
+            {transactions.map((tx, index) => (
+                <tr key={index} className="border-b last:border-none hover:bg-gray-50 transition">
+                <td className="py-2">{tx.date}</td>
+                <td
+                    className={`py-2 font-medium ${
+                    tx.type === "Income" ? "text-green-600" : "text-red-600"
+                    }`}
+                >
+                    {tx.amount}
+                </td>
+                <td className="py-2">{tx.category}</td>
+                <td className="py-2">{tx.type}</td>
+                </tr>
+            ))}
+            </tbody>
             </table>
             <div className="text-right mt-4">
                 <Link href="/transactions" className="text-blue-600 hover:underline text-sm font-medium">
