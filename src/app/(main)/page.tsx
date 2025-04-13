@@ -30,7 +30,7 @@ export default function HomePage() {
                     <div>
                         <SignedOut>
                             <SignInButton>
-                                <button className="bg-black text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-900 transition">
+                                <button className="bg-orange-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-900 transition">
                                     Sign In
                                 </button>
                             </SignInButton>

@@ -105,6 +105,7 @@ Finverse is a comprehensive personal finance web application designed to help st
 <a href="https://github.com/PartnerFind/partnerfind.tech/graphs/contributors"> <img height="128" src="https://avatars.githubusercontent.com/u/67123306?v=4"/></a>
 <a href="https://github.com/PartnerFind/partnerfind.tech/graphs/contributors"> <img height="128" src="https://avatars.githubusercontent.com/u/86448548?v=4"/></a>
 <a href="https://github.com/PartnerFind/partnerfind.tech/graphs/contributors"> <img height="128" src="https://avatars.githubusercontent.com/u/67066931?v=4"/></a>
+
 ---
 
 <p align="center">Built with ❤️ for FBLA Coding & Programming 2024-25</p>
