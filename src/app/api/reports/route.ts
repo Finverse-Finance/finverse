@@ -85,7 +85,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     error: "No transactions found",
-                    message: `No transactions found for the selected ${timeRange} time range${categories.length > 0 ? ` and categories: ${categories.join(", ")}` : ""}. Please select a different time range or categories.`,
+                    message: `No transactions found for the selected ${timeRange} time range${categories.length > 0 ? ` and categories: ${categories.join(", ")}` : ""}. Please try a different time range or category selection.`,
+                    report: null,
+                    data: {
+                        transactions: [],
+                        accounts: [],
+                        timeRange,
+                        categories,
+                    },
                 },
                 { status: 404 }
             );

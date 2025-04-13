@@ -3,15 +3,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle } from "lucide-react";
 
 interface ReportDisplayProps {
     report: string | null;
     isLoading: boolean;
     timeRange?: string;
     categories?: string[];
+    errorMessage?: string | null;
 }
 
-export function ReportDisplay({ report, isLoading, timeRange, categories }: ReportDisplayProps) {
+export function ReportDisplay({ report, isLoading, timeRange, categories, errorMessage }: ReportDisplayProps) {
     // Format the markdown report from Gemini for display
     const formatReport = (text: string) => {
         // First replace bold text (**text**)
@@ -107,6 +109,24 @@ export function ReportDisplay({ report, isLoading, timeRange, categories }: Repo
                             <Skeleton className="h-4 w-3/4" />
                         </div>
                     </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // If there's an error message from the API (like no transactions found)
+    if (errorMessage) {
+        return (
+            <Card className="mt-6">
+                <CardHeader>
+                    <div className="flex items-center space-x-2">
+                        <AlertCircle className="h-5 w-5 text-amber-500" />
+                        <CardTitle>No Data Available</CardTitle>
+                    </div>
+                    <CardDescription>We couldn't generate a report with the selected criteria</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground text-sm">{errorMessage}</p>
                 </CardContent>
             </Card>
         );

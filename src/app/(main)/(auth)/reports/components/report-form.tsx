@@ -59,10 +59,10 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                 <FormLabel>Time Range</FormLabel>
                                 <FormControl>
                                     <Select disabled={isLoading} value={field.value} onValueChange={field.onChange}>
-                                        <SelectTrigger className="w-full bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                                        <SelectTrigger className="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-700">
                                             <SelectValue placeholder="Select time range" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 z-50">
+                                        <SelectContent className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 z-50">
                                             <SelectItem value="Daily">Daily</SelectItem>
                                             <SelectItem value="Weekly">Weekly</SelectItem>
                                             <SelectItem value="Monthly">Monthly</SelectItem>
@@ -83,18 +83,18 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                 <FormLabel>Categories (Optional)</FormLabel>
                                 <FormControl>
                                     <Faceted value={field.value} onValueChange={field.onChange} multiple={true}>
-                                        <FacetedTrigger className="w-full bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+                                        <FacetedTrigger className="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-700">
                                             <FacetedBadgeList
                                                 options={categories.map((cat) => ({ label: cat, value: cat }))}
                                                 placeholder="Select categories"
                                             />
                                         </FacetedTrigger>
-                                        <FacetedContent className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 max-h-60 overflow-y-auto z-50">
+                                        <FacetedContent className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 max-h-60 overflow-y-auto z-50 text-sm">
                                             {categories.map((cat) => (
                                                 <FacetedItem
                                                     key={cat}
                                                     value={cat}
-                                                    className="hover:bg-gray-100 dark:hover:bg-gray-800"
+                                                    className="hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
                                                 >
                                                     {cat}
                                                 </FacetedItem>
@@ -108,7 +108,11 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                     />
                 </div>
 
-                <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
+                <Button
+                    type="submit"
+                    className="w-full md:w-auto bg-black hover:bg-gray-800 dark:bg-black dark:hover:bg-gray-900 text-white text-sm font-medium"
+                    disabled={isLoading}
+                >
                     {isLoading ? "Generating Report..." : "Generate Report"}
                     {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>

@@ -38,6 +38,7 @@ const LoadingOverlay = ({ message }: { message: string }) => {
 export default function DailyReports() {
     const [isLoading, setIsLoading] = useState(false);
     const [report, setReport] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [reportData, setReportData] = useState<{
         transactions: any[];
         accounts: any[];
@@ -73,6 +74,7 @@ export default function DailyReports() {
         try {
             setIsLoading(true);
             setReport(null);
+            setErrorMessage(null);
 
             // API request to generate report
             const response = await fetch("/api/reports", {
@@ -106,7 +108,13 @@ export default function DailyReports() {
                     setSavedReports((prev) => [newReport, ...prev]);
                 }
             } else {
-                throw new Error(data.error || "Failed to generate report");
+                if (response.status === 404) {
+                    // Handle no transactions found error
+                    setErrorMessage(data.message);
+                    setReportData(data.data);
+                } else {
+                    throw new Error(data.error || "Failed to generate report");
+                }
             }
         } catch (error) {
             console.error("Error generating report:", error);
@@ -118,6 +126,7 @@ export default function DailyReports() {
 
     const loadSavedReport = (savedReport: SavedReport) => {
         setReport(savedReport.report);
+        setErrorMessage(null);
         setReportData({
             transactions: [], // We don't have the transactions data in the saved report
             accounts: [], // We don't have the accounts data in the saved report
@@ -147,9 +156,10 @@ export default function DailyReports() {
                 isLoading={isLoading}
                 timeRange={reportData?.timeRange}
                 categories={reportData?.categories}
+                errorMessage={errorMessage}
             />
 
-            {reportData && <ReportCharts transactions={reportData.transactions} />}
+            {reportData && report && <ReportCharts transactions={reportData.transactions} />}
 
             {/* Previous Reports Section */}
             <Card className="mt-8">
