@@ -22,21 +22,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <NuqsAdapter>
                 <html lang="en">
                     <body className={geist.className}>
-                        <header className="flex justify-between items-center px-6 py-4 shadow-md border-b border-gray-200 bg-white">
-                            <h1 className="text-xl font-semibold">Finverse</h1>
-                            <div>
-                                <SignedOut>
-                                    <SignInButton>
-                                        <button className="bg-black text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-900 transition">
-                                            Sign In
-                                        </button>
-                                    </SignInButton>
-                                </SignedOut>
-                                <SignedIn>
-                                    <UserButton />
-                                </SignedIn>
-                            </div>
-                        </header>
                         <main className="p-6">{children}</main>
                     </body>
                 </html>
