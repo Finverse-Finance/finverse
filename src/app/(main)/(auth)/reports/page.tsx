@@ -52,7 +52,7 @@ export default function DailyReports() {
         const fetchSavedReports = async () => {
             try {
                 setIsLoadingSaved(true);
-                const response = await fetch("/api/daily-reports/history");
+                const response = await fetch("/api/reports/history");
                 const data = await response.json();
 
                 if (response.ok && data.reports) {
@@ -75,7 +75,7 @@ export default function DailyReports() {
             setReport(null);
 
             // API request to generate report
-            const response = await fetch("/api/daily-reports", {
+            const response = await fetch("/api/reports", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

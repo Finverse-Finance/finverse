@@ -20,8 +20,8 @@ export default function HomePage() {
                         <Link href="/transactions" className="text-gray-700 hover:text-orange-500 font-medium">
                             Transactions
                         </Link>
-                        <Link href="/daily-reports" className="text-gray-700 hover:text-orange-500 font-medium">
-                            Daily Reports
+                        <Link href="/reports" className="text-gray-700 hover:text-orange-500 font-medium">
+                            Reports
                         </Link>
                         <Link href="/assistant" className="text-gray-700 hover:text-orange-500 font-medium">
                             Assistant

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Daily Reports form schema
+// Reports form schema
 export const dailyReportsFormSchema = z.object({
     timeRange: z.enum(["Daily", "Weekly", "Monthly", "All Time"], {
         required_error: "Please select a time range.",

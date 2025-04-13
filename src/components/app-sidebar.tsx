@@ -32,8 +32,8 @@ const navItems = [
         icon: ReceiptText,
     },
     {
-        title: "Daily Reports",
-        href: "/daily-reports",
+        title: "Reports",
+        href: "/reports",
         icon: CalendarDays,
     },
     {
