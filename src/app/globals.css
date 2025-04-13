@@ -1,3 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ShadCN UI Theme */
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 20 14.3% 4.1%;
+        --card: 0 0% 100%;
+        --card-foreground: 20 14.3% 4.1%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 20 14.3% 4.1%;
+        --primary: 24 9.8% 10%;
+        --primary-foreground: 60 9.1% 97.8%;
+        --secondary: 60 4.8% 95.9%;
+        --secondary-foreground: 24 9.8% 10%;
+        --muted: 60 4.8% 95.9%;
+        --muted-foreground: 25 5.3% 44.7%;
+        --accent: 60 4.8% 95.9%;
+        --accent-foreground: 24 9.8% 10%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 60 9.1% 97.8%;
+        --border: 20 5.9% 90%;
+        --input: 20 5.9% 90%;
+        --ring: 24 5.4% 63.9%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 20 14.3% 4.1%;
+        --foreground: 60 9.1% 97.8%;
+        --card: 20 14.3% 4.1%;
+        --card-foreground: 60 9.1% 97.8%;
+        --popover: 20 14.3% 4.1%;
+        --popover-foreground: 60 9.1% 97.8%;
+        --primary: 60 9.1% 97.8%;
+        --primary-foreground: 24 9.8% 10%;
+        --secondary: 12 6.5% 15.1%;
+        --secondary-foreground: 60 9.1% 97.8%;
+        --muted: 12 6.5% 15.1%;
+        --muted-foreground: 24 5.4% 63.9%;
+        --accent: 12 6.5% 15.1%;
+        --accent-foreground: 60 9.1% 97.8%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 60 9.1% 97.8%;
+        --border: 12 6.5% 15.1%;
+        --input: 12 6.5% 15.1%;
+        --ring: 24 5.7% 82.9%;
+    }
+}
+
 /* Markdown content styles */
 .markdown-content ul {
     list-style-type: disc;
@@ -47,50 +99,44 @@
     margin-bottom: 1rem;
 }
 
-/* Dropdown orange tint for Daily Reports */
+/* Daily Reports Styling - Fixed */
 .daily-reports-page .select-trigger,
 .daily-reports-page [data-radix-popper-content-wrapper] {
-    background-color: rgba(255, 165, 0, 0.05) !important; /* Light orange tint */
-    border-color: rgba(255, 165, 0, 0.2) !important; /* Subtle orange border */
+    background-color: rgba(255, 165, 0, 0.05);
+    border-color: rgba(255, 165, 0, 0.2);
 }
 
 .daily-reports-page .select-trigger:hover,
 .daily-reports-page [data-radix-popper-content-wrapper]:hover {
-    background-color: rgba(255, 165, 0, 0.1) !important; /* Slightly stronger tint on hover */
-    border-color: rgba(255, 165, 0, 0.3) !important;
+    background-color: rgba(255, 165, 0, 0.1);
+    border-color: rgba(255, 165, 0, 0.3);
 }
 
 .daily-reports-page [data-radix-select-item][data-highlighted],
 .daily-reports-page [cmdk-item][data-selected="true"] {
-    background-color: rgba(255, 165, 0, 0.15) !important; /* Orange tint for selected items */
+    background-color: rgba(255, 165, 0, 0.15);
 }
 
-/* Daily Reports dropdown styling with orange tint */
-.daily-reports-page .select-trigger {
-    background-color: rgba(255, 153, 51, 0.05);
-    border-color: rgba(255, 153, 51, 0.2);
+/* Fix z-index issues for dropdowns and popover content */
+[data-radix-popper-content-wrapper] {
+    z-index: 50 !important;
 }
 
-.daily-reports-page .select-trigger:hover {
-    background-color: rgba(255, 153, 51, 0.1);
-    border-color: rgba(255, 153, 51, 0.3);
-}
-
-.daily-reports-page [data-radix-popper-content-wrapper] {
-    background-color: rgba(255, 153, 51, 0.03);
-    border-color: rgba(255, 153, 51, 0.2);
-}
-
-.daily-reports-page [data-highlighted],
-.daily-reports-page [data-state="checked"] {
-    background-color: rgba(255, 153, 51, 0.2);
+/* Fix for the Faceted component in daily reports */
+.daily-reports-page [data-highlighted] {
+    background-color: rgba(255, 165, 0, 0.15);
     color: rgba(0, 0, 0, 0.8);
 }
 
-/* Additional daily reports form styling */
+.daily-reports-page [data-state="checked"] {
+    background-color: rgba(255, 165, 0, 0.15);
+    color: rgba(0, 0, 0, 0.8);
+}
+
+/* Form styling */
 .daily-reports-page input,
 .daily-reports-page textarea {
-    background-color: rgba(255, 153, 51, 0.05);
+    background-color: rgba(255, 255, 255, 1);
     border-color: rgba(255, 153, 51, 0.2);
 }
 
@@ -120,7 +166,7 @@
 }
 
 .daily-reports-page .animate-spin {
-    color: rgba(255, 153, 51, 1) !important;
+    color: rgba(255, 153, 51, 1);
 }
 
 /* LoadingOverlay Styles */
@@ -136,7 +182,7 @@
 }
 
 .loading-spinner {
-    color: #3b82f6 !important;
+    color: #3b82f6;
     animation: spin 1.5s linear infinite;
 }
 
@@ -178,10 +224,4 @@
     100% {
         transform: rotate(360deg);
     }
-}
-
-/* Submit Button Hover Effect */
-button[type="submit"]:hover {
-    background-color: #2563eb;
-    transition: background-color 0.3s ease;
 }
