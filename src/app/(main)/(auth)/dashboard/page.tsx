@@ -231,7 +231,6 @@ export default function Dashboard() {
             <MonthlyBarCharts />
 
             <RecentTransactions />
-
         </div>
     );
 }

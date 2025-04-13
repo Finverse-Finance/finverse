@@ -63,10 +63,10 @@ export function Chat({ initialMessages = [], userId }: ChatProps) {
 
     return (
         <div className="flex flex-col h-full">
-            <div ref={messagesContainer} className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={messagesContainer} className="flex-1 overflow-y-auto p-5 space-y-5">
                 {isLoadingUserData ? (
                     <div className="flex items-center justify-center h-full">
-                        <p className="text-gray-500">Loading your financial data...</p>
+                        <p className="text-gray-500 text-lg">Loading your financial data...</p>
                     </div>
                 ) : (
                     <>
@@ -79,15 +79,15 @@ export function Chat({ initialMessages = [], userId }: ChatProps) {
             </div>
 
             {error && (
-                <div className="mx-4 mb-2 bg-red-50 text-red-800 px-3 py-2 rounded-md text-sm">
+                <div className="mx-5 mb-3 bg-red-50 text-red-800 px-4 py-3 rounded-md text-base">
                     Error: {error.message || "Something went wrong"}
                 </div>
             )}
 
-            <div className="border-t p-4 pb-6">
+            <div className="border-t p-5">
                 <form onSubmit={handleSubmit} className="flex rounded-lg border overflow-hidden shadow-sm">
                     <input
-                        className="flex-1 px-4 py-2 focus:outline-none text-gray-700 text-sm"
+                        className="flex-1 px-5 py-3 focus:outline-none text-gray-700 text-base"
                         value={input}
                         placeholder={
                             isLoadingUserData ? "Loading your data..." : "Ask a question about your finances..."
@@ -98,7 +98,7 @@ export function Chat({ initialMessages = [], userId }: ChatProps) {
                     <button
                         type="submit"
                         disabled={isLoading || !input || isLoadingUserData}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm"
+                        className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-base"
                     >
                         {isLoading ? "..." : "Send"}
                     </button>

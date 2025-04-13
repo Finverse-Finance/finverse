@@ -7,8 +7,11 @@ import { dailyReportsFormSchema, DailyReportsFormValues } from "../schema";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Faceted, FacetedTrigger, FacetedContent, FacetedBadgeList, FacetedItem } from "@/components/ui/faceted";
-import { ArrowRight } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { CheckIcon, ChevronsUpDown, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 interface ReportFormProps {
@@ -18,6 +21,7 @@ interface ReportFormProps {
 
 export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
     const [categories, setCategories] = useState<string[]>([]);
+    const [open, setOpen] = useState(false);
 
     // Initialize the form with default values
     const form = useForm<DailyReportsFormValues>({
@@ -57,19 +61,19 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Time Range</FormLabel>
-                                <FormControl>
-                                    <Select disabled={isLoading} value={field.value} onValueChange={field.onChange}>
-                                        <SelectTrigger className="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-700">
+                                <Select disabled={isLoading} value={field.value} onValueChange={field.onChange}>
+                                    <FormControl>
+                                        <SelectTrigger>
                                             <SelectValue placeholder="Select time range" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 z-50">
-                                            <SelectItem value="Daily">Daily</SelectItem>
-                                            <SelectItem value="Weekly">Weekly</SelectItem>
-                                            <SelectItem value="Monthly">Monthly</SelectItem>
-                                            <SelectItem value="All Time">All Time</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Daily">Daily</SelectItem>
+                                        <SelectItem value="Weekly">Weekly</SelectItem>
+                                        <SelectItem value="Monthly">Monthly</SelectItem>
+                                        <SelectItem value="All Time">All Time</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -81,38 +85,95 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Categories (Optional)</FormLabel>
-                                <FormControl>
-                                    <Faceted value={field.value} onValueChange={field.onChange} multiple={true}>
-                                        <FacetedTrigger className="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-700">
-                                            <FacetedBadgeList
-                                                options={categories.map((cat) => ({ label: cat, value: cat }))}
-                                                placeholder="Select categories"
-                                            />
-                                        </FacetedTrigger>
-                                        <FacetedContent className="bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 max-h-60 overflow-y-auto z-50 text-sm">
-                                            {categories.map((cat) => (
-                                                <FacetedItem
-                                                    key={cat}
-                                                    value={cat}
-                                                    className="hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
-                                                >
-                                                    {cat}
-                                                </FacetedItem>
-                                            ))}
-                                        </FacetedContent>
-                                    </Faceted>
-                                </FormControl>
+                                <Popover open={open} onOpenChange={setOpen}>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                aria-expanded={open}
+                                                className="w-full justify-between"
+                                                disabled={isLoading}
+                                            >
+                                                {(field.value || []).length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {(field.value || []).length > 2 ? (
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="rounded-sm px-1 font-normal"
+                                                            >
+                                                                {(field.value || []).length} selected
+                                                            </Badge>
+                                                        ) : (
+                                                            (field.value || []).map((category) => (
+                                                                <Badge
+                                                                    key={category}
+                                                                    variant="secondary"
+                                                                    className="rounded-sm px-1 font-normal"
+                                                                >
+                                                                    {category}
+                                                                </Badge>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    "Select categories"
+                                                )}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-full p-0" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Search categories..." className="h-9" />
+                                            <CommandList>
+                                                <CommandEmpty>No categories found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {categories.map((category) => {
+                                                        const selectedCategories = field.value || [];
+                                                        const isSelected = selectedCategories.includes(category);
+
+                                                        return (
+                                                            <CommandItem
+                                                                key={category}
+                                                                value={category}
+                                                                onSelect={() => {
+                                                                    const currentValue = field.value || [];
+                                                                    const newValue = isSelected
+                                                                        ? currentValue.filter(
+                                                                              (item) => item !== category
+                                                                          )
+                                                                        : [...currentValue, category];
+
+                                                                    form.setValue("categories", newValue);
+                                                                }}
+                                                            >
+                                                                <div
+                                                                    className={cn(
+                                                                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border",
+                                                                        isSelected
+                                                                            ? "border-primary bg-primary text-primary-foreground"
+                                                                            : "border-primary opacity-50"
+                                                                    )}
+                                                                >
+                                                                    {isSelected && <CheckIcon className="h-3 w-3" />}
+                                                                </div>
+                                                                <span>{category}</span>
+                                                            </CommandItem>
+                                                        );
+                                                    })}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
 
-                <Button
-                    type="submit"
-                    className="w-full md:w-auto bg-black hover:bg-gray-800 dark:bg-black dark:hover:bg-gray-900 text-white text-sm font-medium"
-                    disabled={isLoading}
-                >
+                <Button type="submit" className="w-full md:w-auto" disabled={isLoading}>
                     {isLoading ? "Generating Report..." : "Generate Report"}
                     {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>

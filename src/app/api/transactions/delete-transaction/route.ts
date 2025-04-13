@@ -40,8 +40,6 @@ export async function DELETE(req: NextRequest) {
         currentBalance = Number(Number(currentBalance).toFixed(2)); // Format to 2 decimal places
 
         // Remove the transaction from the user's transactions array
-        console.log(`Attempting to delete transaction with ID: ${transactionId}`);
-
         const updateResult = await collection.updateOne(
             {
                 clerkId: userId,
@@ -57,10 +55,6 @@ export async function DELETE(req: NextRequest) {
                     "financials.currentBalance": currentBalance,
                 } as any,
             }
-        );
-
-        console.log(
-            `Delete operation result: Modified count: ${updateResult.modifiedCount}, Matched count: ${updateResult.matchedCount}`
         );
 
         if (!updateResult.acknowledged) {
