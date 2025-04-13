@@ -67,7 +67,7 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                             <SelectValue placeholder="Select time range" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white dark:bg-gray-900 border shadow-md z-50">
                                         <SelectItem value="Daily">Daily</SelectItem>
                                         <SelectItem value="Weekly">Weekly</SelectItem>
                                         <SelectItem value="Monthly">Monthly</SelectItem>
@@ -123,12 +123,15 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                             </Button>
                                         </FormControl>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-full p-0" align="start">
-                                        <Command>
+                                    <PopoverContent
+                                        className="w-full p-0 bg-white dark:bg-gray-900 border shadow-md z-50"
+                                        align="start"
+                                    >
+                                        <Command className="bg-white dark:bg-gray-900">
                                             <CommandInput placeholder="Search categories..." className="h-9" />
-                                            <CommandList>
+                                            <CommandList className="max-h-[300px] overflow-y-auto bg-white dark:bg-gray-900">
                                                 <CommandEmpty>No categories found.</CommandEmpty>
-                                                <CommandGroup>
+                                                <CommandGroup className="p-1">
                                                     {categories.map((category) => {
                                                         const selectedCategories = field.value || [];
                                                         const isSelected = selectedCategories.includes(category);
@@ -137,6 +140,7 @@ export function ReportForm({ onSubmit, isLoading }: ReportFormProps) {
                                                             <CommandItem
                                                                 key={category}
                                                                 value={category}
+                                                                className="px-2 py-1.5 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
                                                                 onSelect={() => {
                                                                     const currentValue = field.value || [];
                                                                     const newValue = isSelected
