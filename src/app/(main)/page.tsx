@@ -53,11 +53,21 @@ export default function HomePage() {
                             Track your accounts, manage transactions, and get AI-powered insights to take control of
                             your financial future.
                         </p>
-                        <SignInButton mode="modal">
-                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block">
-                                Get Started
-                            </button>
-                        </SignInButton>
+                        <SignedOut>
+                            <SignInButton>
+                                <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block">
+                                    Get Started
+                                </button>
+                            </SignInButton>
+                        </SignedOut>
+                        <SignedIn>
+                            <Link
+                                href="/dashboard"
+                                className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block"
+                            >
+                                Go to Dashboard
+                            </Link>
+                        </SignedIn>
                     </div>
                 </div>
             </section>
@@ -125,11 +135,21 @@ export default function HomePage() {
                     <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                         Join thousands of students who are managing their money smarter with Finverse.
                     </p>
-                    <SignInButton mode="modal">
-                        <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block">
-                            Sign Up Now
-                        </button>
-                    </SignInButton>
+                    <SignedOut>
+                        <SignInButton>
+                            <button className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block">
+                                Sign Up Now
+                            </button>
+                        </SignInButton>
+                    </SignedOut>
+                    <SignedIn>
+                        <Link
+                            href="/dashboard"
+                            className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 rounded-md text-lg font-medium transition-colors inline-block"
+                        >
+                            Go to Dashboard
+                        </Link>
+                    </SignedIn>
                 </div>
             </section>
         </div>
