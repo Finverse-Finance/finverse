@@ -58,10 +58,10 @@ export function CategoryPieChart() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
         >
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Expenses by Category</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Income by Category</h2>
             <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
-                    <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                    <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100}>
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}

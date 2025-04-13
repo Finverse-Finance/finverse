@@ -1,4 +1,3 @@
-// app/components/ui/IncomeExpenseChart.tsx
 "use client";
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -7,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
 type ChartDataPoint = {
-    date: string;
+    date: string; // original full date
     Income: number;
     Expenses: number;
 };
@@ -38,6 +37,20 @@ export function IncomeExpenseChart() {
         }
     }, [user, isLoaded]);
 
+    // Format the X-axis label: show only one label per month
+    const getTickFormatter = () => {
+        let lastMonth = "";
+        return (dateStr: string) => {
+            const date = new Date(dateStr);
+            const month = date.toLocaleString("en-US", { month: "long", year: "numeric" });
+            if (month !== lastMonth) {
+                lastMonth = month;
+                return month;
+            }
+            return "";
+        };
+    };
+
     return (
         <motion.div
             className="bg-white p-6 rounded-lg shadow-md"
@@ -58,9 +71,36 @@ export function IncomeExpenseChart() {
                             <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                         </linearGradient>
                     </defs>
-                    <XAxis dataKey="date" />
-                    <YAxis tickFormatter={(value) => `$${value}`} />
-                    <Tooltip formatter={(value: number) => `$${value.toFixed(2)}`} />
+                    <XAxis
+                        dataKey="date"
+                        tickFormatter={(dateStr) => {
+                            const date = new Date(dateStr);
+                            return date.toLocaleString("en-US", { month: "short", year: "numeric" });
+                        }}
+                        ticks={Array.from(
+                            new Map(
+                                data.map((d) => {
+                                    const date = new Date(d.date);
+                                    const key = `${date.getFullYear()}-${date.getMonth()}`;
+                                    return [key, d.date]; // Only keep the first date per month
+                                })
+                            ).values()
+                        )}
+                    />
+                    <YAxis tickFormatter={(value) => `$${Math.abs(value).toLocaleString()}`} />
+                    <Tooltip
+                        labelFormatter={(label: string) => {
+                            const date = new Date(label);
+                            return date.toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                            });
+                        }}
+                        formatter={(value: number) =>
+                            `$${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                        }
+                    />
                     <CartesianGrid strokeDasharray="3 3" />
                     <Area type="monotone" dataKey="Income" stroke="#22c55e" fill="url(#incomeGradient)" />
                     <Area type="monotone" dataKey="Expenses" stroke="#ef4444" fill="url(#expenseGradient)" />

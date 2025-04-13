@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        const expensesByCategory = user?.financials?.expensesByCategory ?? null;
+        const expensesByCategory = user?.financials?.incomeByCategory ?? null;
 
         const formattedData = Object.entries(expensesByCategory).map(([category, value]) => ({
             name: category

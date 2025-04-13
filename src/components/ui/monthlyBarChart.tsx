@@ -21,8 +21,14 @@ export function MonthlyBarCharts() {
 
             const res = await fetch(`/api/plaid/get-monthly-summary?clerkId=${user.id}`);
             const json = await res.json();
+
             if (Array.isArray(json)) {
-                setData(json);
+                const formatted = json.map((entry) => ({
+                    ...entry,
+                    Income: Number(entry.Income.toFixed(2)),
+                    Expenses: Number(entry.Expenses.toFixed(2)),
+                }));
+                setData(formatted);
             }
         };
 
@@ -31,8 +37,12 @@ export function MonthlyBarCharts() {
         }
     }, [user, isLoaded]);
 
+    const formatYAxis = (value: number) => `$${Math.round(value).toLocaleString()}`;
+    const formatTooltip = (value: number) => `$${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {/* Monthly Expenses Chart */}
             <motion.div
                 className="bg-white p-6 rounded-lg shadow-md"
                 initial={{ opacity: 0, y: 20 }}
@@ -43,14 +53,15 @@ export function MonthlyBarCharts() {
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={data}>
                         <XAxis dataKey="month" />
-                        <YAxis tickFormatter={(value) => `$${value}`} />
-                        <Tooltip formatter={(value: number) => `$${value}`} />
+                        <YAxis width={80} tickFormatter={formatYAxis} />
+                        <Tooltip formatter={formatTooltip} />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Bar dataKey="Expenses" fill="#ef4444" />
                     </BarChart>
                 </ResponsiveContainer>
             </motion.div>
 
+            {/* Monthly Income Chart */}
             <motion.div
                 className="bg-white p-6 rounded-lg shadow-md"
                 initial={{ opacity: 0, y: 20 }}
@@ -61,8 +72,8 @@ export function MonthlyBarCharts() {
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={data}>
                         <XAxis dataKey="month" />
-                        <YAxis tickFormatter={(value) => `$${value}`} />
-                        <Tooltip formatter={(value: number) => `$${value}`} />
+                        <YAxis width={80} tickFormatter={formatYAxis} />
+                        <Tooltip formatter={formatTooltip} />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Bar dataKey="Income" fill="#22c55e" />
                     </BarChart>

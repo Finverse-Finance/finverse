@@ -181,12 +181,6 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {isOnboardingComplete && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6">
-                    Welcome to Finverse.
-                </div>
-            )}
-
             {/* Bento Grid Style Cards */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
                 {/* Left Card - Total + Summary */}
