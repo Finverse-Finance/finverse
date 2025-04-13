@@ -192,7 +192,7 @@ export default function Dashboard() {
                 {/* Left Card - Total + Summary */}
                 <div className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">Total Balance</h2>
+                        <h2 className="text-xl font-bold text-gray-900">Current Balance</h2>
                         <p className="text-3xl mt-2 font-semibold text-gray-800">
                             {availableBalance !== null ? `$${availableBalance.toLocaleString()}` : "Loading..."}
                         </p>

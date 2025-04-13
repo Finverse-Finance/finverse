@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
         }
 
         // Format balance to 2 decimal places
-        const rawBalance = user?.plaidData?.accounts?.[0]?.balances?.available ?? null;
+        const rawBalance = user?.financials?.currentBalance ?? null;
         const balance = rawBalance !== null ? Number(Number(rawBalance).toFixed(2)) : null;
 
         // Format transactions to 2 decimal places

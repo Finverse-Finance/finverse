@@ -19,6 +19,7 @@ export default tseslint.config(
         ],
         rules: {
             "prefer-const": "warn",
+            "@typescript-eslint/prefer-optional-chain": "warn",
             "@typescript-eslint/no-unused-vars": "warn",
             "@typescript-eslint/prefer-nullish-coalescing": "warn",
             "@typescript-eslint/no-unsafe-assignment": "warn",
