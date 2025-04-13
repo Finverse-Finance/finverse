@@ -232,36 +232,6 @@ export default function Dashboard() {
 
             <RecentTransactions />
 
-            <div className="grid gap-6 md:grid-cols-2">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">User Information</h2>
-                    <div className="space-y-2">
-                        <p>
-                            <span className="font-medium">Name:</span>{" "}
-                            {isLoaded ? (user?.fullName ?? "Not provided") : "Loading..."}
-                        </p>
-                        <p>
-                            <span className="font-medium">Email:</span>{" "}
-                            {isLoaded ? (user?.primaryEmailAddress?.emailAddress ?? "Not provided") : "Loading..."}
-                        </p>
-                        <p>
-                            <span className="font-medium">Onboarding Status:</span>{" "}
-                            {isOnboardingComplete ? "Completed" : "Not Completed"}
-                        </p>
-                        <p>
-                            <span className="font-medium">Onboarding Method:</span> {onboardingMethod}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Account Summary</h2>
-                    <div className="space-y-2">
-                        <p>Welcome to your Finverse dashboard!</p>
-                        <p>Your financial data will appear here once you add transactions.</p>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
