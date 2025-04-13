@@ -195,7 +195,7 @@ export const createColumns = (onTransactionUpdated: () => void): ColumnDef<Trans
             return (
                 <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{format(new Date(date), "MMM dd, yyyy")}</span>
+                    <span>{date}</span>
                 </div>
             );
         },

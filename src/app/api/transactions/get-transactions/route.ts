@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
                 id: t.transaction_id,
                 type: t.amount < 0 ? "Expense" : "Income",
                 category: Array.isArray(t.category) && t.category.length > 0 ? t.category[0] : "Uncategorized",
-                date: new Date(t.date).toISOString().split("T")[0], // YYYY-MM-DD format
+                date: t.date, // Keep original date string from MongoDB
                 amount: Math.abs(t.amount).toFixed(2),
                 name: t.name || t.merchant_name || "Unknown",
                 notes: t.notes || "",

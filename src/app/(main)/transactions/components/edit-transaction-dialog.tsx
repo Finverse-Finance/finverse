@@ -23,9 +23,7 @@ const formSchema = z.object({
     id: z.string(),
     type: z.enum(["Income", "Expense"]),
     category: z.string().min(1, "Category is required"),
-    date: z.date({
-        required_error: "Date is required",
-    }),
+    date: z.string().min(1, "Date is required"),
     amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
         message: "Amount must be a positive number",
     }),
@@ -73,7 +71,7 @@ export default function EditTransactionDialog({
             id: "",
             type: "Expense",
             category: "",
-            date: new Date(),
+            date: "",
             amount: "",
             name: "",
             notes: "",
@@ -87,7 +85,7 @@ export default function EditTransactionDialog({
                 id: transaction.id,
                 type: transaction.type,
                 category: transaction.category,
-                date: new Date(transaction.date),
+                date: transaction.date,
                 amount: transaction.amount,
                 name: transaction.name,
                 notes: transaction.notes || "",
@@ -109,7 +107,7 @@ export default function EditTransactionDialog({
                     id: values.id,
                     type: values.type,
                     category: values.category,
-                    date: format(values.date, "yyyy-MM-dd"),
+                    date: values.date,
                     amount: values.amount,
                     name: values.name,
                     notes: values.notes,
@@ -199,37 +197,9 @@ export default function EditTransactionDialog({
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                     <FormLabel>Date</FormLabel>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant={"outline"}
-                                                    className={cn(
-                                                        "pl-3 text-left font-normal bg-white",
-                                                        !field.value && "text-muted-foreground"
-                                                    )}
-                                                >
-                                                    {field.value ? (
-                                                        format(field.value, "PPP")
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            className="w-auto p-0 bg-white border border-amber-100"
-                                            align="start"
-                                        >
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
+                                    <FormControl>
+                                        <Input type="date" {...field} className="bg-white" />
+                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
